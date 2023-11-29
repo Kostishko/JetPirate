@@ -30,7 +30,7 @@ namespace JetPirate
             get => realRotate;
             set
             {
-                realRotate = JetShip.ModulasClamp(value, (float)-Math.PI * 2, (float)Math.PI * 2);
+                realRotate = Object2D.ModulasClamp(value, (float)-Math.PI * 2, (float)Math.PI * 2);
             }
         }
 
@@ -41,7 +41,7 @@ namespace JetPirate
             get => planRotate;
             set
             {
-                planRotate = JetShip.ModulasClamp(value, -(float)Math.PI * 2, (float)Math.PI * 2);
+                planRotate = Object2D.ModulasClamp(value, -(float)Math.PI * 2, (float)Math.PI * 2);
             }
         }
 
@@ -125,11 +125,11 @@ namespace JetPirate
         {
             sp.Draw(texture, position, null, Color.White, RealRotate, new Vector2(texture.Width / 2, texture.Height/2), 0.1f, SpriteEffects.None, 0);
 
-            DebugManager.DebugString("Rotation: " + RealRotate, Vector2.Zero);
-            DebugManager.DebugString("JetVelocity: " + jetVelocity, new Vector2(0, 22));
-            DebugManager.DebugString("RealVel: " + realVelocity, new Vector2(0, 44));
-            DebugManager.DebugString("Power: " + Power, new Vector2(0, 66));
-            DebugManager.DebugString("gravity: " + gravity, new Vector2(0, 88));
+            //DebugManager.DebugString("Rotation: " + RealRotate, Vector2.Zero);
+            //DebugManager.DebugString("JetVelocity: " + jetVelocity, new Vector2(0, 22));
+            //DebugManager.DebugString("RealVel: " + realVelocity, new Vector2(0, 44));
+            //DebugManager.DebugString("Power: " + Power, new Vector2(0, 66));
+            //DebugManager.DebugString("gravity: " + gravity, new Vector2(0, 88));
             
         }
 

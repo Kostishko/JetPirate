@@ -6,116 +6,155 @@ using System.Collections.Generic;
 
 namespace JetPirate
 {
-    internal class ParticleSystem
+    internal class ParticleSystem : Object2D
     {
-        Texture2D texture;
-        Random random;
-        Vector2 position;
-        Color color;
-        bool fading;
-        float startSize, endSize;
-        float speed;
-        int amount;
-        Vector2 direction;
+        //emission
 
-        public List<Particle> particles;
-        public bool play;
-        public float time;
-        public float timeMax;
-        public Queue<Particle> queueParticles;
+        private Particle _particle;
+        private List<Particle> _particles;
+        private Vector2 _direction;
+        private bool isPlaying;
 
-        public ParticleSystem (Texture2D texture, Random rng, Vector2 position, Color color, bool fading, float startSize, float endSize, float speed, int amount, Vector2 direction, float timeMax )
+        public float timeBetweenEmission;
+        private float timer;
+
+        //Particle setting
+        private Texture2D partTex;        
+
+        public ParticleSystem(Vector2 pos, float rot, Texture2D tex): base(pos, rot)
         {
-            this.texture = texture;
-            this.random = rng;
-            this.position = position;
-            this.color = color;
-            this.fading = fading;
-            this.startSize = startSize;
-            this.endSize = endSize;
-            this.speed = speed;
-            this.amount = amount;
-            this.direction = direction;
-            this.timeMax = timeMax;
-            time = timeMax;
-
-            particles = new List<Particle>();
-            queueParticles = new Queue<Particle>();
-            for (int i = 0; i < this.amount;i++)
+            partTex = tex;
+            timeBetweenEmission = 2f;
+            timer = timeBetweenEmission;
+            isPlaying = false;
+            _particles = new List<Particle>();
+            for (int i = 0; i < 10; i++)
             {
-                particles.Add(new Particle(this.position, Vector2.One, this.texture, this.color, this.speed, this.startSize,this.endSize, this.fading));
+                _particles.Add(new Particle(partTex, position, 1f, rotation));
             }
-
         }
 
-        public void UpdateMe(GameTime gameTime)
-        {
-            if(play)
-            {
-               
 
+
+        public void UpdateMe(Vector2 pos, float rot)
+        {
+            position = pos;
+            rotation = rot;
+            _direction = new Vector2((float)Math.Sin(rotation), (float)Math.Cos(rotation));
+
+            for (int i =0; i<_particles.Count;i++)
+            {
+                _particles[i].UpdateMe(_direction, position);
+                
             }
 
+            if(isPlaying)
+            {
+                if (timer <= 0)
+                {
+                    for (int i = 0; i < _particles.Count; i++)
+                    {
+                        if (!_particles[i].GetState())
+                        {
+                            _particles[i].TriggerMe();
+                            timer = timeBetweenEmission;
+                            break;
+                        }
+
+                    }
+                }
+                else
+                {
+                    timer -= 0.1f;
+                }
+            }
+        }
+
+        public void DrawMe(SpriteBatch sp)
+        {
+
+            
+            for(int i=0; i < _particles.Count;i++)
+            {
+                _particles[i].DrawMe(sp);   
+            }
+
+
+            DebugManager.DebugString("isPlaying?: " + isPlaying, new Vector2(0, 0));
+            DebugManager.DebugString("Timer to next particle: "+timer, new Vector2(0, 22));
+            DebugManager.DebugString("direction: "+ _direction, new Vector2(0, 44));
+        }
+
+        public void Play()
+        {
+            isPlaying=true;
+        }
+
+        public void Stop()
+        {
+            isPlaying = false;
         }
 
 
     }
 
-    class Particle
+    class Particle : Object2D
     {
-        Vector2 direction;
-        Vector2 position;
-        Texture2D texture;
-        Color color;
-        float speed;
-        bool fading;        
-        float endSize;
-        float curSize;
+        private Texture2D _texture;
+        private float speed;
+        
+        private bool isFlying;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="position">Start position</param>
-        /// <param name="direction">Only normolised vectors</param>
-        /// <param name="texture">Image</param>
-        /// <param name="color"></param>
-        /// <param name="speed"></param>
-        public Particle(Vector2 position, Vector2 direction, Texture2D texture, Color color, float speed, float startSize, float endSize, bool fading)
+        private Color color;
+
+        public Particle(Texture2D tex, Vector2 pos, float speed, float rot) : base (pos,rot)
         {
+            _texture = tex;
+            position = pos;
             this.speed = speed;
-            this.position = position;
-            this.direction = direction;
-            this.texture = texture;
-            this.color = color;
-            this.curSize = startSize;
+            color = Color.Transparent;
+            
 
+            isFlying = false;
         }
 
-        public void UpdateMe()
-        {
-            //fading
-            if(fading)
-            {
-                color.A--;
-            }
 
-            //size
-            if (curSize > endSize)
+        public void UpdateMe(Vector2 direction, Vector2 startPos)
+        {
+            if (isFlying)
             {
-                curSize -= 0.1f;
+                position.X += direction.X * speed;
+                position.Y += direction.Y * speed;
+                color.A--;
+                color.B--;
+                color.R--; 
+                color.G--; 
+                if(color.A==0)
+                {
+                    TriggerMe();
+                }
             }
             else
-            {
-                curSize += 0.1f;
+            {   
+                position = startPos;
             }
 
-            position += direction * speed;
-           
         }
 
         public void DrawMe(SpriteBatch sp)
         {
-            sp.Draw(texture, position, null, color, 0, Vector2.Zero, curSize,SpriteEffects.None,0);
+            sp.Draw(_texture, position, null, color, rotation, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+        }
+
+        public void TriggerMe()
+        {
+            isFlying = isFlying ? false : true;
+            if (isFlying) { color=Color.White; }
+        }
+
+        public bool GetState()
+        {
+            return isFlying;
         }
 
     }

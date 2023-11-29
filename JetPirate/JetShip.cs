@@ -35,7 +35,7 @@ namespace JetPirate
             get => rotateLeft;
             set
             {
-                rotateLeft = ModulasClamp(value,(float) -Math.PI, (float)Math.PI);
+                rotateLeft = Object2D.ModulasClamp(value,(float) -Math.PI, (float)Math.PI);
             }
         }
         protected float rotateRight;
@@ -44,7 +44,7 @@ namespace JetPirate
             get => rotateRight;
             set
             {
-                rotateRight = ModulasClamp(value,(float) -Math.PI,(float)Math.PI);
+                rotateRight = Object2D.ModulasClamp(value,(float) -Math.PI,(float)Math.PI);
             }
         }
 

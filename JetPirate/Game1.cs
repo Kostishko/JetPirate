@@ -11,6 +11,8 @@ namespace JetPirate
 
         private JetShipTest2 jetShip;
 
+        private ParticleSystem _particleSystem;
+
 
         
 
@@ -38,7 +40,7 @@ namespace JetPirate
             jetShip = new JetShipTest2(Content.Load<Texture2D>("jetship01"), new Vector2(400, 100));
 
 
-
+            _particleSystem = new ParticleSystem(new Vector2(200, 200), MathHelper.Pi, Content.Load<Texture2D>("fire"));
 
             //Debugger
             DebugManager.debugFont = Content.Load<SpriteFont>("debugFont");
@@ -53,7 +55,17 @@ namespace JetPirate
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             jetShip.UpdateMe(Keyboard.GetState(), gameTime);
-            // TODO: Add your update logic here
+
+            _particleSystem.UpdateMe(new Vector2(200, 200), 0);
+            if(Keyboard.GetState().IsKeyDown(Keys.Space))
+            {
+                _particleSystem.Play();
+            }
+            else
+            {
+                _particleSystem.Stop();
+            }
+
 
             base.Update(gameTime);
         }
@@ -64,7 +76,9 @@ namespace JetPirate
 
             _spriteBatch.Begin();
 
-            jetShip.DrawMe(_spriteBatch);
+            //jetShip.DrawMe(_spriteBatch);
+
+            _particleSystem.DrawMe(_spriteBatch);
             _spriteBatch.End();
             // TODO: Add your drawing code here
 
