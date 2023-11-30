@@ -11,7 +11,7 @@ namespace JetPirate
     {
 
         protected Texture2D texture;
-        protected Vector2 position;
+        public Vector2 position;
 
         public JetShipTest2(Texture2D texture, Vector2 position)
         {
@@ -25,7 +25,7 @@ namespace JetPirate
         }
 
         protected float realRotate;
-        protected float RealRotate
+        public float RealRotate
         {
             get => realRotate;
             set

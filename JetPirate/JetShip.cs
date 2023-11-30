@@ -8,189 +8,135 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace JetPirate
 {
-    internal class JetShip
+    internal class JetShip : Object2D
     {
-        protected Texture2D texture;
-        protected Rectangle mainRec;
-        protected Vector2 position;
 
-        protected Rectangle colRec; 
+        //Visual
+        private Texture2D texture;
+        private Vector2 origin;
+        //TODO : put here all particle Systems
 
-        protected Vector2 center;
-
-        protected float power;
-
-        protected float Power
+        //Movement variables (there are variable of real velocity and plan velocity to create the effect of inertion)
+        //Rotation heritage from Object2D
+        private float planRotation;
+        protected float PlanRotation
         {
-            get => power;
+            get => planRotation;
             set
             {
-                power = Math.Clamp(value, 0, 3f);
+                planRotation = Object2D.ModulasClamp(value, (float)-Math.PI * 2, (float)Math.PI * 2);
             }
-        }
-
-        protected float rotateLeft;
-        protected float RotateLeft
+        } // rotation that 
+        private float maxPower; //Max power for both engines
+        //engines' powers. Clamp as half of maxPower. Sum them to final power;
+        private float leftPower;
+        private float LeftPower
         {
-            get => rotateLeft;
+            get
+            {
+                return leftPower;
+            }
             set
             {
-                rotateLeft = Object2D.ModulasClamp(value,(float) -Math.PI, (float)Math.PI);
+                leftPower = Math.Clamp(value, 0, maxPower / 2);
             }
-        }
-        protected float rotateRight;
-        protected float RotateRight
+        } //left power, max clamp with maxPower/2 as max
+        private float rightPower;
+        private float RightPower
         {
-            get => rotateRight;
+            get
+            {
+                return rightPower;
+            }
             set
             {
-                rotateRight = Object2D.ModulasClamp(value,(float) -Math.PI,(float)Math.PI);
+                rightPower = Math.Clamp(value, 0, maxPower / 2);
             }
+        }//right power
+        public float currentPower
+        {
+            get => Math.Clamp(LeftPower+RightPower,0,maxPower);           
+        }  //variable for sum of leftPower and RightPower, only get
+        private float maxGravity; // use gravity here because there is no more objects that should be affected by that
+
+        private float currentGravity;
+        private float CurrentGravity
+        {
+            get
+            {
+                return currentGravity;
+            }
+            set
+            {
+                currentGravity = Math.Clamp(value, 0,maxGravity);
+            }
+        } //Gravity will less if power closer to max
+
+        private Vector2 velocity; // real velocity of jet
+        private Vector2 planVelocity; // velocity that controlled by player 
+        private float velX, velY; //variables for inertion of final real velocity
+
+
+        public JetShip(Vector2 pos, float rot, Texture2D tex) : base(pos,rot)
+        {
+            texture = tex;
+            origin = new Vector2(tex.Width / 2, tex.Height / 2);
+            maxGravity = 2f;
+            maxPower = 4f;
         }
 
-        protected float newRotate;
-        protected float rotate;
-        protected float Rotate
+
+        public void UpdateMe(GamePadState gPad, GameTime gTime)
         {
-            get => rotate;
-            set 
+            //Rotate and increse power with Triggers and decrease that if Triggers released
+            if(gPad.Triggers.Left!=0)
             {
-                rotate = ModulasClamp(value, (float)-Math.PI*2, (float)Math.PI*2);
+                PlanRotation -= 0.02f*gPad.Triggers.Left;
+                LeftPower += 0.01f * gPad.Triggers.Left;
             }
-        }
-
-        protected Vector2 jetVelocity;
-        protected Vector2 velocity;
-        protected float velX;
-        protected float velY;
-
-        public JetShip(Texture2D tex, Vector2  pos)
-        {
-            this.texture = tex;
-            position = pos;
-            mainRec = new Rectangle((int)Math.Round(pos.X),(int)Math.Round(pos.Y),tex.Width/10,tex.Height/10);
-            colRec = new Rectangle((int)Math.Round(pos.X - mainRec.Size.X / 2), (int)Math.Round(pos.Y - mainRec.Size.X / 2), tex.Width / 12, tex.Height / 12);
-
-            velocity = Vector2.Zero;
-            Rotate = 0 ;
-            Power = 0;
-            
-        }
-
-        public void UpdateMe(KeyboardState keys)
-        {
-            if (keys.IsKeyDown(Keys.A))
+            else
             {
-                //Rotate -= 0.01f;
-                RotateLeft = Math.Clamp(RotateLeft - 0.001f,(float)-Math.PI*2,0);
-                //RotateRight = 0.002f;
-                Power +=0.005f;
-            }
-            if (keys.IsKeyDown(Keys.D))
-            {
-                //Rotate += 0.01f;
-                RotateRight = Math.Clamp(RotateRight + 0.001f,0, (float)Math.PI * 2);
-
-               // RotateLeft = 0.002f;
-                Power += 0.005f;
+                LeftPower -= 0.05f;
             }
 
-            Rotate += RotateLeft + RotateRight;
-
-            //RotateLeft = Math.Clamp(RotateLeft + 0.001f, -(float)Math.PI * 2, 0);
-            //RotateRight=Math.Clamp(RotateRight - 0.001f,0, (float)Math.PI * 2);
-           // RotateLeft = 0;
-           // RotateRight = 0;
-
-            jetVelocity = new Vector2((float)Math.Sin(Rotate)*Power,-(float)Math.Cos(Rotate)*Power +1.5f);
-
-            if(Rotate!=newRotate)
+            if(gPad.Triggers.Right!=0) 
             {
-                if (Rotate > newRotate)
+                PlanRotation += 0.02f * gPad.Triggers.Right;
+                RightPower+=0.01f* gPad.Triggers.Right;
+            }
+            else
+            {
+                RightPower -= 0.05f;
+            }
+
+            //compute inertion of rotation
+            if (Rotation!=PlanRotation)
+            {
+                if(Rotation>PlanRotation)
                 {
-                    Rotate =Math.Clamp(Rotate-0.005f,newRotate, (float)Math.PI*2);
+                    Rotation = Math.Clamp(Rotation-(0.1f/currentPower),PlanRotation,(float)Math.PI*2);
                 }
                 else
                 {
-                    Rotate = Math.Clamp(Rotate + 0.005F, (float)-Math.PI * 2, newRotate);
-                }
-            }
-            
-            if(velX!=jetVelocity.X)
-            {
-                if (velX > jetVelocity.X)
-                {
-                    velX -= 0.05f;
-                }
-                else
-                {
-                    velX += 0.05f;
-                }
-            }
-            if(velY!=jetVelocity.Y)
-            {
-                if(velY>jetVelocity.Y)
-                {
-                    velY -= 0.05f;
-                }
-                else
-                {
-                    velY += 0.05f;
+                    Rotation = Math.Clamp(Rotation+(0.1f/currentPower),-(float)Math.PI * 2, PlanRotation );
                 }
             }
 
-            velocity = new Vector2(velX, velY);
-            //velocity.Y += 0.02f;
-            position += velocity;
-            //position.Y += 1f;
-            Vector2 temp = new Vector2(position.X-mainRec.Width/2+ texture.Width / 48, position.Y-mainRec.Height/2+texture.Height/48);
-            colRec.Location = temp.ToPoint();
-            mainRec.Location = position.ToPoint();
-            //mainRec.Location += velocity.ToPoint();
+            //Gravitation compute
+            CurrentGravity = maxGravity/ currentPower;
 
-            if (keys.IsKeyUp(Keys.A) && keys.IsKeyUp(Keys.D))
-            {
-                Power -= 0.01f;
-            }
-            
-            
+            // velocity that create player
+            planVelocity = new Vector2((float)Math.Sin(Rotation) * currentPower, - (float)Math.Cos(Rotation) * currentPower + CurrentGravity);
 
+            position += planVelocity;
         }
 
         public void DrawMe(SpriteBatch sp)
         {
-            //sp.Draw(texture, mainRec, null, Color.White,Rotate, mainRec.Center.ToVector2(), SpriteEffects.None,0f);
-            sp.Draw(texture, position, null, Color.White, Rotate, new Vector2(texture.Width/2,texture.Height), 0.1f, SpriteEffects.None, 0);
-           DebugManager.DebugRectangle(colRec);
-            DebugManager.DebugString("Rotation: " + Rotate, Vector2.Zero);
-            DebugManager.DebugString("JetVelocity: " + jetVelocity, new Vector2(0, 22));
-            DebugManager.DebugString("Power: "+power, new Vector2(0, 44));
-            DebugManager.DebugString("rotateLeft: " + RotateLeft, new Vector2(0, 66));
-            DebugManager.DebugString("rotateRight: " + RotateRight, new Vector2(0, 88));
+            sp.Draw(texture, position, null, Color.White, Rotation, origin, 0.1f, SpriteEffects.None, 1f);
+            DebugManager.DebugString("current power: " + currentPower, new Vector2(0, 0));
+            DebugManager.DebugString("Rotation: "+ Rotation, new Vector2(0, 22));    
+            DebugManager.DebugString("Plan rotation: "+PlanRotation, new Vector2(0, 44));
         }
-
-        static public float ModulasClamp(float value, float min, float max )
-        {
-            //var modulas = MathF.Abs(rangeMax-rangeMin);
-            //if ((value %= modulas) < 0f)
-            //    value += modulas;
-            //return Math.Clamp(value+Math.Min(rangeMin,rangeMax),min,max);
-
-            float ret;
-            if (value >= max)
-            {
-                ret = min + value % (max - min);
-                return ret;
-            }
-            else if (value < min)
-            {
-                ret = (max) - Math.Abs(value % (max - min));
-                return ret;
-            }
-
-            return value;
-
-        }
-
     }
 }

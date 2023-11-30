@@ -9,7 +9,8 @@ namespace JetPirate
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private JetShipTest2 jetShip;
+        private JetShip jetShip;
+
 
         private ParticleSystem _particleSystem;
 
@@ -37,10 +38,10 @@ namespace JetPirate
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            jetShip = new JetShipTest2(Content.Load<Texture2D>("jetship01"), new Vector2(400, 100));
+            // jetShip = new JetShipTest2(Content.Load<Texture2D>("jetship01"), new Vector2(400, 100));
+            jetShip = new JetShip(new Vector2(200, 200), 0f, Content.Load<Texture2D>("jetship01"));
 
-
-            _particleSystem = new ParticleSystem(new Vector2(200, 200), MathHelper.Pi, Content.Load<Texture2D>("fire"));
+            _particleSystem = new ParticleSystem(new Vector2(200, 200), -MathHelper.Pi, Content.Load<Texture2D>("fire"), 2f,10f,1f);
 
             //Debugger
             DebugManager.debugFont = Content.Load<SpriteFont>("debugFont");
@@ -54,17 +55,18 @@ namespace JetPirate
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            jetShip.UpdateMe(Keyboard.GetState(), gameTime);
 
-            _particleSystem.UpdateMe(new Vector2(200, 200), 0);
-            if(Keyboard.GetState().IsKeyDown(Keys.Space))
-            {
-                _particleSystem.Play();
-            }
-            else
-            {
-                _particleSystem.Stop();
-            }
+            jetShip.UpdateMe(GamePad.GetState(PlayerIndex.One), gameTime);
+
+          //  _particleSystem.UpdateMe(jetShip.position, -jetShip.RealRotate);
+            //if(Keyboard.GetState().IsKeyDown(Keys.A)|| Keyboard.GetState().IsKeyDown(Keys.D))
+            //{
+            //    _particleSystem.Play();
+            //}
+            //else
+            //{
+            //    _particleSystem.Stop();
+            //}
 
 
             base.Update(gameTime);
@@ -76,9 +78,10 @@ namespace JetPirate
 
             _spriteBatch.Begin();
 
-            //jetShip.DrawMe(_spriteBatch);
+          //  _particleSystem.DrawMe(_spriteBatch);
+            jetShip.DrawMe(_spriteBatch);
 
-            _particleSystem.DrawMe(_spriteBatch);
+            
             _spriteBatch.End();
             // TODO: Add your drawing code here
 

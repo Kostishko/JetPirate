@@ -9,7 +9,7 @@ namespace JetPirate
     {
         protected Vector2 position;
 
-        protected float rotation;
+        private float rotation;
         protected float Rotation
         {
             get => rotation;
@@ -22,7 +22,7 @@ namespace JetPirate
         public Object2D(Vector2 pos, float rot)
         {
             this.position = pos;
-            this.rotation = rot;
+            this.Rotation = rot;
         }
 
 
