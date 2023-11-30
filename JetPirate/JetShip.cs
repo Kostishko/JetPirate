@@ -24,7 +24,7 @@ namespace JetPirate
             get => planRotation;
             set
             {
-                planRotation = Object2D.ModulasClamp(value, (float)-Math.PI * 2, (float)Math.PI * 2);
+                planRotation = Object2D.ModulasClamp(value, -(float)Math.PI , (float)Math.PI );
             }
         } // rotation that 
         private float maxPower; //Max power for both engines
@@ -81,8 +81,8 @@ namespace JetPirate
         {
             texture = tex;
             origin = new Vector2(tex.Width / 2, tex.Height / 2);
-            maxGravity = 2f;
-            maxPower = 4f;
+            maxGravity = 3f;
+            maxPower = 6f;
         }
 
 
@@ -92,21 +92,21 @@ namespace JetPirate
             if(gPad.Triggers.Left!=0)
             {
                 PlanRotation -= 0.02f*gPad.Triggers.Left;
-                LeftPower += 0.01f * gPad.Triggers.Left;
+                LeftPower += 0.01f * gPad.Triggers.Left*2;
             }
             else
             {
-                LeftPower -= 0.05f;
+                LeftPower -= 0.02f;
             }
 
             if(gPad.Triggers.Right!=0) 
             {
                 PlanRotation += 0.02f * gPad.Triggers.Right;
-                RightPower+=0.01f* gPad.Triggers.Right;
+                RightPower+=0.01f* gPad.Triggers.Right*2;
             }
             else
             {
-                RightPower -= 0.05f;
+                RightPower -= 0.02f;
             }
 
             //compute inertion of rotation

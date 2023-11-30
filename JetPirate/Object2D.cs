@@ -15,7 +15,7 @@ namespace JetPirate
             get => rotation;
             set
             {
-                rotation = ModulasClamp(value, (float)-Math.PI * 2, (float)Math.PI * 2);
+                rotation = ModulasClamp(value, -(float)Math.PI, (float)Math.PI );
             }
         }
 
