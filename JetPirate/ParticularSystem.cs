@@ -101,9 +101,9 @@ namespace JetPirate
                 _particles[i].DrawMe(sp);   
             }
             //debug strings
-            DebugManager.DebugString("isPlaying?: " + isPlaying, new Vector2(0, 0));
-            DebugManager.DebugString("Timer to next particle: "+timer, new Vector2(0, 22));
-            DebugManager.DebugString("direction: "+ Direction, new Vector2(0, 44));
+            //DebugManager.DebugString("isPlaying?: " + isPlaying, new Vector2(0, 0));
+            //DebugManager.DebugString("Timer to next particle: "+timer, new Vector2(0, 22));
+            //DebugManager.DebugString("direction: "+ Direction, new Vector2(0, 44));
         }
 
         //trigger to start an emission

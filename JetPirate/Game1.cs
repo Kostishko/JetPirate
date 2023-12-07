@@ -39,7 +39,7 @@ namespace JetPirate
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // jetShip = new JetShipTest2(Content.Load<Texture2D>("jetship01"), new Vector2(400, 100));
-            jetShip = new JetShip(new Vector2(200, 200), 0f, Content.Load<Texture2D>("jetship01"));
+            jetShip = new JetShip(new Vector2(200, 200), 0f, Content.Load<Texture2D>("jetship01"), Content.Load<Texture2D>("fire_left"));
 
             _particleSystem = new ParticleSystem(new Vector2(200, 200), -MathHelper.Pi, Content.Load<Texture2D>("fire"), 2f,10f,1f);
 

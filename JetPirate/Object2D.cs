@@ -53,6 +53,15 @@ namespace JetPirate
 
         }
 
+        public float GetRotation()
+        {
+            return Rotation;
+        }
+
+        public Vector2 GetPosition()
+        {
+            return position;
+        }
 
     }
 }
