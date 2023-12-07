@@ -15,7 +15,7 @@ namespace JetPirate
             get => rotation;
             set
             {
-                rotation = ModulasClamp(value, -(float)Math.PI, (float)Math.PI );
+                rotation = ModulasClamp(value, (float)-Math.PI, (float)Math.PI);
             }
         }
 
@@ -40,12 +40,12 @@ namespace JetPirate
             float ret;
             if (value >= max)
             {
-                ret = min + value % (max - min);
+                ret = min + value % (max);
                 return ret;
             }
             else if (value < min)
             {
-                ret = (max) - Math.Abs(value % (max - min));
+                ret = (max) - Math.Abs(value % (max));
                 return ret;
             }
 
@@ -53,6 +53,15 @@ namespace JetPirate
 
         }
 
+        public float GetRotation()
+        {
+            return Rotation;
+        }
+
+        public Vector2 GetPosition()
+        {
+            return position;
+        }
 
     }
 }

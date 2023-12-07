@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.VisualBasic.Logging;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -14,19 +15,18 @@ namespace JetPirate
         //Visual
         private Texture2D texture;
         private Vector2 origin;
-        //TODO : put here all particle Systems
+
+        private EngineParticles leftEngine;
+        private EngineParticles rightEngine;
+
+
 
         //Movement variables (there are variable of real velocity and plan velocity to create the effect of inertion)
         //Rotation heritage from Object2D
-        private float planRotation;
-        protected float PlanRotation
-        {
-            get => planRotation;
-            set
-            {
-                planRotation = Object2D.ModulasClamp(value, -(float)Math.PI , (float)Math.PI );
-            }
-        } // rotation that 
+        private float rightRotation;
+        private float leftRotation;
+
+        
         private float maxPower; //Max power for both engines
         //engines' powers. Clamp as half of maxPower. Sum them to final power;
         private float leftPower;
@@ -77,66 +77,122 @@ namespace JetPirate
         private float velX, velY; //variables for inertion of final real velocity
 
 
-        public JetShip(Vector2 pos, float rot, Texture2D tex) : base(pos,rot)
+        public JetShip(Vector2 pos, float rot, Texture2D tex, Texture2D engineFire) : base(pos,rot)
         {
             texture = tex;
             origin = new Vector2(tex.Width / 2, tex.Height / 2);
-            maxGravity = 3f;
+            maxGravity = 2f;
             maxPower = 6f;
+
+            //visual effects
+            leftEngine = new EngineParticles(pos, rot, this, new Vector2(-25, tex.Height*0.05f), engineFire);
+            rightEngine = new EngineParticles(pos, rot, this, new Vector2(tex.Width*0.05f-10, tex.Height * 0.05f), engineFire);
+
         }
 
 
         public void UpdateMe(GamePadState gPad, GameTime gTime)
         {
+
+
+            #region movement
             //Rotate and increse power with Triggers and decrease that if Triggers released
-            if(gPad.Triggers.Left!=0)
+            if (gPad.Triggers.Right!=0)
             {
-                PlanRotation -= 0.02f*gPad.Triggers.Left;
-                LeftPower += 0.01f * gPad.Triggers.Left*2;
+                if (gPad.Triggers.Left == 0)
+                {
+                    leftRotation -= 0.02f * gPad.Triggers.Right;
+                }
+                //Rotation -= 0.02f*gPad.Triggers.Left;
+                LeftPower += 0.01f * gPad.Triggers.Right;
+                rightEngine.UpdateMe(true);
             }
             else
             {
-                LeftPower -= 0.02f;
+                LeftPower -= 0.05f;
+                rightEngine.UpdateMe(false);
             }
 
-            if(gPad.Triggers.Right!=0) 
+            if(gPad.Triggers.Left!=0) 
             {
-                PlanRotation += 0.02f * gPad.Triggers.Right;
-                RightPower+=0.01f* gPad.Triggers.Right*2;
+                if (gPad.Triggers.Right == 0)
+                {
+                    rightRotation += 0.02f * gPad.Triggers.Left;
+                }
+                //Rotation += 0.02f * gPad.Triggers.Right;
+                RightPower+=0.01f* gPad.Triggers.Left;
+                leftEngine.UpdateMe(true);
             }
             else
             {
-                RightPower -= 0.02f;
+                RightPower -= 0.05f;
+                leftEngine.UpdateMe(false);
             }
 
-            //compute inertion of rotation
-            if (Rotation!=PlanRotation)
+            //Inertion for rotation
+            if (leftRotation<0)
             {
-                if(Rotation>PlanRotation)
-                {
-                    Rotation = Math.Clamp(Rotation-(0.1f/currentPower),PlanRotation,(float)Math.PI*2);
-                }
-                else
-                {
-                    Rotation = Math.Clamp(Rotation+(0.1f/currentPower),-(float)Math.PI * 2, PlanRotation );
-                }
+                Rotation -= 0.015f;
+                leftRotation += 0.015f;
             }
+            if(rightRotation>0)
+            {
+                Rotation += 0.015f;
+                rightRotation -= 0.015f;
+            }
+            
 
-            //Gravitation compute
-            CurrentGravity = maxGravity/ currentPower;
+            //Gravitation compute (maybe add something more complex later)
+            CurrentGravity = maxGravity;
 
             // velocity that create player
             planVelocity = new Vector2((float)Math.Sin(Rotation) * currentPower, - (float)Math.Cos(Rotation) * currentPower + CurrentGravity);
+            
+            //Inertion for velocity
+            if (velX != planVelocity.X)
+            {
+                if (velX > planVelocity.X)
+                {
+                    velX = Math.Clamp(velX - 0.02f, planVelocity.X - 0.02f, 10);
+                }
+                else
+                {
+                    velX = Math.Clamp(velX + 0.02f, -100, planVelocity.X + 0.02f);
+                }
+            }
+            if (velY != planVelocity.Y)
+            {
+                if (velY > planVelocity.Y)
+                {
+                    velY = Math.Clamp(velY - 0.02f, planVelocity.Y - 0.02f, 10);
+                }
+                else
+                {
+                    velY = Math.Clamp(velY + 0.02f, -100, planVelocity.Y + 0.02f);
+                }
+            }
 
-            position += planVelocity;
+            velocity = new Vector2(velX, velY);
+            position += velocity;
+
+            #endregion
         }
 
         public void DrawMe(SpriteBatch sp)
         {
+            
+            leftEngine.engineParticles.DrawMe(sp);
+            rightEngine.engineParticles.DrawMe(sp);
             sp.Draw(texture, position, null, Color.White, Rotation, origin, 0.1f, SpriteEffects.None, 1f);
-            DebugManager.DebugString("current power: " + currentPower, new Vector2(0, 0));
-            DebugManager.DebugString("Rotation: "+ Rotation, new Vector2(0, 22));    
-            DebugManager.DebugString("Plan rotation: "+PlanRotation, new Vector2(0, 44));
+
+            #region debug
+            //DebugManager.DebugString("current power: " + currentPower, new Vector2(0, 0));
+            //DebugManager.DebugString("Rotation: "+ Rotation, new Vector2(0, 22));    
+            //DebugManager.DebugString("Planotation: "+PlanRotation, new Vector2(0, 44));
+            //DebugManager.DebugString("Origin: " + origin, new Vector2(0, 66));
+
+            // DebugManager.DebugString("LeftEngine distance: " + leftEngine.distance, new Vector2(0,0));
+            #endregion
         }
     }
 }
