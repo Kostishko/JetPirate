@@ -9,7 +9,7 @@ namespace JetPirate
     {
         //public due debug
         public Vector2 position;
-        public Vector2 savedPos;
+        
         public float zoom;
 
         public Vector2 screenSize;
@@ -17,6 +17,10 @@ namespace JetPirate
         public Vector2 leftUpperBorder;
         public Vector2 rightBottomBorder;
 
+        //Shaking effect
+        public Vector2 savedPos;
+        private float shakeTimer;
+        private float shakeTime;
         public Random rng;
 
         public Camera(Vector2 pos, Vector2 leftUpperBord, Vector2 rightBottomBord, Vector2 screenSize)
@@ -27,6 +31,8 @@ namespace JetPirate
             this.screenSize = screenSize;
             zoom = 1;
             rng = new Random();
+            shakeTime = 0.5f;
+            
         }
 
         public Matrix GetCam()
