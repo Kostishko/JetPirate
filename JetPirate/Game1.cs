@@ -15,6 +15,11 @@ namespace JetPirate
         private ParticleSystem _particleSystem;
 
 
+        private Camera cam;
+
+        //Controll
+        private GamePadState  currState;
+        private GamePadState prevState;
         
 
         public Game1()
@@ -43,6 +48,9 @@ namespace JetPirate
 
             _particleSystem = new ParticleSystem(new Vector2(200, 200), -MathHelper.Pi, Content.Load<Texture2D>("fire"), 2f,10f,1f);
 
+            //camera initialising
+            cam = new Camera(Vector2.Zero, new Vector2(-2560, -1440), new Vector2(2560,1440), new Vector2(1280,720));
+
             //Debugger
             DebugManager.debugFont = Content.Load<SpriteFont>("debugFont");
             DebugManager.spriteBatch = _spriteBatch;
@@ -52,13 +60,23 @@ namespace JetPirate
 
         protected override void Update(GameTime gameTime)
         {
-
+            currState = GamePad.GetState(PlayerIndex.One);
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             jetShip.UpdateMe(GamePad.GetState(PlayerIndex.One), gameTime);
+            cam.UpdateMe(jetShip);
 
-          //  _particleSystem.UpdateMe(jetShip.position, -jetShip.RealRotate);
+            if(prevState.Buttons.X==ButtonState.Pressed&&currState.Buttons.X==ButtonState.Released)
+            {
+                cam.Shaking(2);
+            }
+            if(prevState.Buttons.X==ButtonState.Pressed&&currState.Buttons.X==ButtonState.Pressed)
+            {
+                cam.StopShaking();
+            }
+
+            //  _particleSystem.UpdateMe(jetShip.position, -jetShip.RealRotate);
             //if(Keyboard.GetState().IsKeyDown(Keys.A)|| Keyboard.GetState().IsKeyDown(Keys.D))
             //{
             //    _particleSystem.Play();
@@ -67,7 +85,7 @@ namespace JetPirate
             //{
             //    _particleSystem.Stop();
             //}
-
+            prevState = currState;
 
             base.Update(gameTime);
         }
@@ -76,10 +94,12 @@ namespace JetPirate
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, cam.GetCam());
 
           //  _particleSystem.DrawMe(_spriteBatch);
             jetShip.DrawMe(_spriteBatch);
+
+            DebugManager.DebugString("cam pos:" + cam.position, new Vector2(jetShip.GetPosition().X, jetShip.GetPosition().Y));
 
             
             _spriteBatch.End();
