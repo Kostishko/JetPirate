@@ -69,13 +69,8 @@ namespace JetPirate
 
             if(prevState.Buttons.X==ButtonState.Pressed&&currState.Buttons.X==ButtonState.Released)
             {
-                cam.Shaking(2);
+                cam.StartShaking(10);
             }
-            if(prevState.Buttons.X==ButtonState.Pressed&&currState.Buttons.X==ButtonState.Pressed)
-            {
-                cam.StopShaking();
-            }
-
             //  _particleSystem.UpdateMe(jetShip.position, -jetShip.RealRotate);
             //if(Keyboard.GetState().IsKeyDown(Keys.A)|| Keyboard.GetState().IsKeyDown(Keys.D))
             //{

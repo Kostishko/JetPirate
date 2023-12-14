@@ -22,6 +22,7 @@ namespace JetPirate
         private float shakeTimer;
         private float shakeTime;
         public Random rng;
+        private int shakePower;
 
         public Camera(Vector2 pos, Vector2 leftUpperBord, Vector2 rightBottomBord, Vector2 screenSize)
         {
@@ -31,7 +32,8 @@ namespace JetPirate
             this.screenSize = screenSize;
             zoom = 1;
             rng = new Random();
-            shakeTime = 0.5f;
+            shakeTime = 1.5f;
+            shakeTimer = 0;
             
         }
 
@@ -54,18 +56,39 @@ namespace JetPirate
             {
                 position.Y = (-jet.GetPosition().Y + screenSize.Y / (2 * zoom));
             }
+
+            Shaking(jet.GetPosition());
         }
 
-        public void Shaking(int power)
+        public void Shaking(Vector2 jetPos)
         {
-            savedPos = position;
-            position.X += rng.Next(-power,power);
-            position.Y += rng.Next(-power,power) ;
+            if (shakeTimer > 0)
+            {
+                var temp = rng.Next(-shakePower, shakePower);
+                if (jetPos.X + temp + screenSize.X / (2 * zoom) < rightBottomBorder.X && jetPos.X + temp + screenSize.X / (2 * zoom) > leftUpperBorder.X)
+                {
+                    position.X += temp;
+                }
+                else
+                {
+                    position.X -= temp;
+                }
+                if (jetPos.Y + temp + screenSize.Y / (2 * zoom) < rightBottomBorder.Y && jetPos.Y + temp + screenSize.Y / (2 * zoom) > leftUpperBorder.Y)
+                { 
+                    position.Y += temp;
+                }
+                else
+                {
+                    position.Y -= temp;
+                }
+                shakeTimer -= 0.1f;
+            }
         }
 
-        public void StopShaking()
+        public void StartShaking(int power)
         {
-            position = savedPos;
+            shakeTimer = shakeTime;
+            shakePower = power;
         }
 
     }
