@@ -10,6 +10,10 @@ namespace JetPirate
         protected Vector2 position;
 
         private float rotation;
+
+        protected Rectangle physicRec;
+
+        
         protected float Rotation
         {
             get => rotation;
@@ -23,10 +27,13 @@ namespace JetPirate
         {
             this.position = pos;
             this.Rotation = rot;
+            this.physicRec = new Rectangle(); //default rectangle
         }
 
-
-
+        //physics tests
+        public void Collided(Object2D obj)
+        {
+        }
 
         /// <summary>
         /// Returns min+Value%Range and max-Value%Range, where Range is Max-Min. Helpful for rotation when value should repeat from other side of Range if value is out of Range.        
@@ -61,6 +68,11 @@ namespace JetPirate
         public Vector2 GetPosition()
         {
             return position;
+        }
+
+        public Rectangle GetRectangle()
+        {   
+                return physicRec;
         }
 
     }
