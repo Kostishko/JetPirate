@@ -15,17 +15,40 @@ namespace JetPirate
 
         private Bullet bullet;
 
+        //movement
+        private float targetRotation;
+        private float TargetRotation
+        {
+            get => targetRotation;
+            set
+            {
+                targetRotation = ModulasClamp(value, (float)-Math.PI, (float)Math.PI);
+            }
+        }
+
 
 
 
 
         public Gun(Vector2 pos, float rot) : base(pos, rot) 
-        {
-            
+        {            
         }
 
+        public void UpdateMe(GamePadState curState, GamePadState oldState)
+        {
+            if (curState.ThumbSticks.Left.X != 0 || curState.ThumbSticks.Left.Y != 0)
+            {
+                TargetRotation = (float)Math.Atan2(curState.ThumbSticks.Left.Y, curState.ThumbSticks.Left.X);
+                if (Rotation!=TargetRotation)
+                {
+                    if( )
+                    {
 
-
+                    }
+                }
+            }
+            
+        }
 
     }
 
