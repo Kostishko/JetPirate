@@ -60,6 +60,8 @@ namespace JetPirate
         public Rectangle colRec;
         public float Damage;
 
+        //
+
         //met enemy
         private Enemy enemy;
 
@@ -73,7 +75,8 @@ namespace JetPirate
         {
           if(obj is Enemy)
             {
-                enemy = (Enemy)obj;
+                obj = (Enemy)obj;
+                
             }
         }
 

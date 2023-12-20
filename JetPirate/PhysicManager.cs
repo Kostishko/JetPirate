@@ -10,7 +10,9 @@ namespace JetPirate
     {
         static private List<Object2D> physicObjects;
 
-
+        /// <summary>
+        /// Rework that to make it less required for CPU (add exclusion for checked before object in the secondloop)
+        /// </summary>
         static public void UpdateMe()
         {
             for (int i = 0; i<physicObjects.Count; i++)
