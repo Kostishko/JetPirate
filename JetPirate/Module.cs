@@ -24,7 +24,7 @@ namespace JetPirate
         public void UpdateMe()
         {
             Rotation = parent.GetRotation()+shiftRotation;
-            shiftPosition = new Vector2((float)Math.Cos(Rotation) * distance, (float)Math.Sin(Rotation) * distance);
+            shiftPosition = new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation) )*distance;
             position = parent.GetPosition()+shiftPosition;
         }
 

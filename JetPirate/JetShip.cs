@@ -19,6 +19,9 @@ namespace JetPirate
         private EngineParticles leftEngine;
         private EngineParticles rightEngine;
 
+        //Weapon
+        private ShipGun shipGun;
+
 
 
         //Movement variables (there are variable of real velocity and plan velocity to create the effect of inertion)
@@ -77,7 +80,7 @@ namespace JetPirate
         private float velX, velY; //variables for inertion of final real velocity
 
 
-        public JetShip(Vector2 pos, float rot, Texture2D tex, Texture2D engineFire) : base(pos,rot)
+        public JetShip(Vector2 pos, float rot, Texture2D tex, Texture2D engineFire, Texture2D shipGunTex) : base(pos,rot)
         {
             texture = tex;
             origin = new Vector2(tex.Width / 2, tex.Height / 2);
@@ -88,12 +91,16 @@ namespace JetPirate
             leftEngine = new EngineParticles(pos, rot, this, new Vector2(-25, tex.Height*0.05f), engineFire);
             rightEngine = new EngineParticles(pos, rot, this, new Vector2(tex.Width*0.05f-10, tex.Height * 0.05f), engineFire);
 
+            //Weapon
+            shipGun = new ShipGun(pos, rot, this, new Vector2(tex.Width*0.05f/2-15, tex.Height*0.05f/2-15), shipGunTex);
+
         }
 
 
-        public void UpdateMe(GamePadState gPad, GameTime gTime)
+        public void UpdateMe(GamePadState gPad, GamePadState oldGPad, GameTime gTime)
         {
-
+            //Weapon
+            shipGun.UpdateMe(gPad, oldGPad);
 
             #region movement
             //Rotate and increse power with Triggers and decrease that if Triggers released
@@ -183,8 +190,9 @@ namespace JetPirate
             
             leftEngine.engineParticles.DrawMe(sp);
             rightEngine.engineParticles.DrawMe(sp);
+            
             sp.Draw(texture, position, null, Color.White, Rotation, origin, 0.1f, SpriteEffects.None, 1f);
-
+            shipGun.gun.DrawMe(sp);
             #region debug
             //DebugManager.DebugString("current power: " + currentPower, new Vector2(0, 0));
             //DebugManager.DebugString("Rotation: "+ Rotation, new Vector2(0, 22));    

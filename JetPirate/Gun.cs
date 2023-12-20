@@ -9,6 +9,10 @@ namespace JetPirate
 
     internal class Gun : Object2D
     {
+        //Graphic
+        private Texture2D texture;
+
+
         public float reloadTimer;
         public float reloadTime;
         public int magCapacity;
@@ -27,27 +31,26 @@ namespace JetPirate
         }
 
 
-
-
-
-        public Gun(Vector2 pos, float rot) : base(pos, rot) 
-        {            
+        public Gun(Vector2 pos, float rot, Texture2D tex) : base(pos, rot) 
+        {
+            texture = tex;
         }
 
-        public void UpdateMe(GamePadState curState, GamePadState oldState)
+        public void UpdateMe(GamePadState curState, GamePadState oldState, Vector2 pos)
         {
             if (curState.ThumbSticks.Left.X != 0 || curState.ThumbSticks.Left.Y != 0)
             {
-                TargetRotation = (float)Math.Atan2(curState.ThumbSticks.Left.Y, curState.ThumbSticks.Left.X);
-                if (Rotation!=TargetRotation)
-                {
-                    if( )
-                    {
-
-                    }
-                }
+                Rotation = (float)Math.Atan2(-curState.ThumbSticks.Left.Y, curState.ThumbSticks.Left.X);               
             }
+
+            position = pos;
             
+
+        }
+
+        public void DrawMe(SpriteBatch sp)
+        {
+            sp.Draw(texture, position, null, Color.White, Rotation, Vector2.Zero, 0.5f, SpriteEffects.None, 1);
         }
 
     }

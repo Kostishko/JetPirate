@@ -44,7 +44,7 @@ namespace JetPirate
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // jetShip = new JetShipTest2(Content.Load<Texture2D>("jetship01"), new Vector2(400, 100));
-            jetShip = new JetShip(new Vector2(200, 200), 0f, Content.Load<Texture2D>("jetship01"), Content.Load<Texture2D>("fire_left"));
+            jetShip = new JetShip(new Vector2(200, 200), 0f, Content.Load<Texture2D>("jetship01"), Content.Load<Texture2D>("fire_left"), Content.Load<Texture2D>("gun"));
 
             _particleSystem = new ParticleSystem(new Vector2(200, 200), -MathHelper.Pi, Content.Load<Texture2D>("fire"), 2f,10f,1f);
 
@@ -64,7 +64,7 @@ namespace JetPirate
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            jetShip.UpdateMe(GamePad.GetState(PlayerIndex.One), gameTime);
+            jetShip.UpdateMe(currState, prevState, gameTime);
             cam.UpdateMe(jetShip);
 
             if(prevState.Buttons.X==ButtonState.Pressed&&currState.Buttons.X==ButtonState.Released)

@@ -30,7 +30,10 @@ namespace JetPirate
             this.physicRec = new Rectangle(); //default rectangle
         }
 
-        //physics tests
+        /// <summary>
+        /// Get an Object2d that can be checked if it an Enemy, buff or smth else
+        /// </summary>
+        /// <param name="obj"></param>
         public void Collided(Object2D obj)
         {
         }
