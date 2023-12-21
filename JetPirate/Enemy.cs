@@ -25,9 +25,7 @@ namespace JetPirate
             physicRec = new Rectangle((int)Math.Round(pos.X),(int)Math.Round( pos.Y), tex.Width,tex.Height );
             Health = 100f;
             isPhysicActive = true;
-            PhysicManager.AddObject(this);
-            
-            
+            PhysicManager.AddObject(this);  
         }
        
 
