@@ -168,7 +168,7 @@ namespace JetPirate
 
         private float flyTimer;
         
-        
+        //texture should be squere
         public Bullet(Vector2 pos, float rot, Texture2D tex): base(pos, rot) 
         {
 
