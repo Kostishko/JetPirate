@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace JetPirate
 {
@@ -9,17 +10,22 @@ namespace JetPirate
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        //Ship - player
         private JetShip jetShip;
 
 
-        private ParticleSystem _particleSystem;
+        //tested particles
+        //private ParticleSystem _particleSystem;
 
-
+        //Camera
         private Camera cam;
 
-        //Controll
+        //Controller
         private GamePadState  currState;
         private GamePadState prevState;
+
+        //Tested enemy
+        private Enemy enemy;
         
 
         public Game1()
@@ -44,9 +50,14 @@ namespace JetPirate
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // jetShip = new JetShipTest2(Content.Load<Texture2D>("jetship01"), new Vector2(400, 100));
-            jetShip = new JetShip(new Vector2(200, 200), 0f, Content.Load<Texture2D>("jetship01"), Content.Load<Texture2D>("fire_left"), Content.Load<Texture2D>("gun"));
+            jetShip = new JetShip(new Vector2(200, 200), 0f, Content.Load<Texture2D>("jetship01"), Content.Load<Texture2D>("fire_left"), Content.Load<Texture2D>("gun"), Content.Load<Texture2D>("Bullet"));
 
-            _particleSystem = new ParticleSystem(new Vector2(200, 200), -MathHelper.Pi, Content.Load<Texture2D>("fire"), 2f,10f,1f);
+            //tested particles
+            //_particleSystem = new ParticleSystem(new Vector2(200, 200), -MathHelper.Pi, Content.Load<Texture2D>("fire"), 2f,10f,1f);
+
+            //Tested enemy
+            enemy = new Enemy(Vector2.Zero, 0f, Content.Load<Texture2D>("Enemy"));
+
 
             //camera initialising
             cam = new Camera(Vector2.Zero, new Vector2(-2560, -1440), new Vector2(2560,1440), new Vector2(1280,720));
@@ -60,6 +71,9 @@ namespace JetPirate
 
         protected override void Update(GameTime gameTime)
         {
+            //physic
+            PhysicManager.UpdateMe();
+
             currState = GamePad.GetState(PlayerIndex.One);
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
@@ -96,7 +110,11 @@ namespace JetPirate
 
             DebugManager.DebugString("cam pos:" + cam.position, new Vector2(jetShip.GetPosition().X, jetShip.GetPosition().Y));
 
-            
+            //tested enemy
+            enemy.DrawMe(_spriteBatch);
+
+
+
             _spriteBatch.End();
             // TODO: Add your drawing code here
 

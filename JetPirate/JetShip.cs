@@ -80,7 +80,7 @@ namespace JetPirate
         private float velX, velY; //variables for inertion of final real velocity
 
 
-        public JetShip(Vector2 pos, float rot, Texture2D tex, Texture2D engineFire, Texture2D shipGunTex) : base(pos,rot)
+        public JetShip(Vector2 pos, float rot, Texture2D tex, Texture2D engineFire, Texture2D shipGunTex, Texture2D bulletTex) : base(pos,rot)
         {
             texture = tex;
             origin = new Vector2(tex.Width / 2, tex.Height / 2);
@@ -92,7 +92,7 @@ namespace JetPirate
             rightEngine = new EngineParticles(pos, rot, this, new Vector2(tex.Width*0.05f-10, tex.Height * 0.05f), engineFire);
 
             //Weapon
-            shipGun = new ShipGun(pos, rot, this, new Vector2(tex.Width*0.05f/2-15, tex.Height*0.05f/2-15), shipGunTex);
+            shipGun = new ShipGun(pos, rot, this, new Vector2(tex.Width*0.05f/2-15, tex.Height*0.05f/2-15), shipGunTex, bulletTex);
 
         }
 

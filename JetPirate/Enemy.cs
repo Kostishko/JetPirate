@@ -21,18 +21,21 @@ namespace JetPirate
 
         public Enemy(Vector2 pos, float rot, Texture2D tex) : base (pos, rot) 
         {
-
-         physicRec = new Rectangle((int)Math.Round(pos.X),(int)Math.Round( pos.Y), tex.Width,tex.Height );
-        PhysicManager.AddObject(this);
+            texture = tex;
+            physicRec = new Rectangle((int)Math.Round(pos.X),(int)Math.Round( pos.Y), tex.Width,tex.Height );
+            Health = 100f;
+            isPhysicActive = true;
+            PhysicManager.AddObject(this);
+            
             
         }
        
 
 
-        public void GetDamage(float damage)
+        public void TakeDamage(float damage)
         {
             Health-=damage;
-            if(Health > 0)
+            if(Health <= 0)
             {
                 this.Destroyed();
             }
@@ -40,7 +43,19 @@ namespace JetPirate
 
         public void Destroyed()
         {
+            isPhysicActive=false;
             PhysicManager.RemoveObject(this);
         }
+
+        public void DrawMe(SpriteBatch sp)
+        {
+            if (isPhysicActive)
+            {
+                sp.Draw(texture, position, null, Color.White, Rotation, Vector2.Zero, 1f, SpriteEffects.None, 1);
+                DebugManager.DebugRectangle(physicRec);
+            }
+        }
+
+
     }
 }

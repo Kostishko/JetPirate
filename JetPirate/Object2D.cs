@@ -13,6 +13,7 @@ namespace JetPirate
 
         protected Rectangle physicRec;
 
+        public bool isPhysicActive;
         
         protected float Rotation
         {
@@ -28,13 +29,15 @@ namespace JetPirate
             this.position = pos;
             this.Rotation = rot;
             this.physicRec = new Rectangle(); //default rectangle
+
+            isPhysicActive = false;
         }
 
         /// <summary>
         /// Get an Object2d that can be checked if it an Enemy, buff or smth else
         /// </summary>
         /// <param name="obj"></param>
-        public void Collided(Object2D obj)
+        public virtual void Collided(Object2D obj)
         {
         }
 

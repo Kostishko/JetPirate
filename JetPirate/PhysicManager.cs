@@ -10,6 +10,11 @@ namespace JetPirate
     {
         static private List<Object2D> physicObjects;
 
+        static PhysicManager()
+        {
+            physicObjects = new List<Object2D>();
+        }
+
         /// <summary>
         /// Rework that to make it less required for CPU (add exclusion for checked before object in the secondloop)
         /// </summary>
@@ -21,9 +26,12 @@ namespace JetPirate
                 {
                     if (i!=j)
                     {
-                        if(physicObjects[i].GetRectangle().Intersects(physicObjects[j].GetRectangle()))
+                        if (physicObjects[i].GetRectangle().Intersects(physicObjects[j].GetRectangle()))
                         {
+                            if (physicObjects[i].isPhysicActive && physicObjects[j].isPhysicActive)
+                            { 
                             physicObjects[i].Collided(physicObjects[j]);
+                            }
                         }
                     }
                 }
