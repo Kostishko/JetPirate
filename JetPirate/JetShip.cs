@@ -92,7 +92,7 @@ namespace JetPirate
             rightEngine = new EngineParticles(pos, rot, this, new Vector2(tex.Width*0.05f-10, tex.Height * 0.05f), engineFire);
 
             //Weapon
-            shipGun = new ShipGun(pos, rot, this, new Vector2(tex.Width*0.05f/2-15, tex.Height*0.05f/2-15), shipGunTex, bulletTex);
+            shipGun = new ShipGun(pos, rot, this, new Vector2(tex.Width/9-14, tex.Height/5), shipGunTex, bulletTex);
 
         }
 
@@ -191,7 +191,7 @@ namespace JetPirate
             leftEngine.engineParticles.DrawMe(sp);
             rightEngine.engineParticles.DrawMe(sp);
             
-            sp.Draw(texture, position, null, Color.White, Rotation, origin, 0.1f, SpriteEffects.None, 1f);
+            sp.Draw(texture, position, null, Color.White, Rotation, origin, 1f, SpriteEffects.None, 1f);
             shipGun.gun.DrawMe(sp);
             #region debug
             //DebugManager.DebugString("current power: " + currentPower, new Vector2(0, 0));

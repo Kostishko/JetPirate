@@ -26,6 +26,8 @@ namespace JetPirate
             Rotation = parent.GetRotation()+shiftRotation;
             shiftPosition = new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation) )*distance;
             position = parent.GetPosition()+shiftPosition;
+
+            physicRec.Location = (position-shiftPosition).ToPoint();
         }
 
         public void DrawMe(SpriteBatch sp)

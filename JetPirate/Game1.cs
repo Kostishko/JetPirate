@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -13,7 +14,6 @@ namespace JetPirate
         //Ship - player
         private JetShip jetShip;
 
-
         //tested particles
         //private ParticleSystem _particleSystem;
 
@@ -26,13 +26,15 @@ namespace JetPirate
 
         //Tested enemy
         private Enemy enemy;
+
+
         
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            Content.RootDirectory = "Content";
 
             _graphics.PreferredBackBufferHeight = 720;
             _graphics.PreferredBackBufferWidth = 1280;
@@ -50,7 +52,7 @@ namespace JetPirate
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // jetShip = new JetShipTest2(Content.Load<Texture2D>("jetship01"), new Vector2(400, 100));
-            jetShip = new JetShip(new Vector2(200, 200), 0f, Content.Load<Texture2D>("jetship01"), Content.Load<Texture2D>("fire_left"), Content.Load<Texture2D>("gun"), Content.Load<Texture2D>("Bullet"));
+            jetShip = new JetShip(new Vector2(200, 200), 0f, Content.Load<Texture2D>("Sprites/Ship_03"), Content.Load<Texture2D>("fire_left"), Content.Load<Texture2D>("Sprites/Gun"), Content.Load<Texture2D>("Sprites/Bullet"));
 
             //tested particles
             //_particleSystem = new ParticleSystem(new Vector2(200, 200), -MathHelper.Pi, Content.Load<Texture2D>("fire"), 2f,10f,1f);
