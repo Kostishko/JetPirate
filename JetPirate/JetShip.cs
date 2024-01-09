@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Threading.Tasks.Sources;
-using static System.Net.Mime.MediaTypeNames;
+using System.Collections.Generic;
 
 
 namespace JetPirate
@@ -25,6 +25,7 @@ namespace JetPirate
 
 
         //Movement variables (there are variable of real velocity and plan velocity to create the effect of inertion)
+        #region Movement variables
         //Rotation heritage from Object2D
         private float rightRotation;
         private float leftRotation;
@@ -78,6 +79,10 @@ namespace JetPirate
         private Vector2 velocity; // real velocity of jet
         private Vector2 planVelocity; // velocity that controlled by player 
         private float velX, velY; //variables for inertion of final real velocity
+        #endregion
+
+        //Physic rectangles for collisions
+        private List<PhysicModule> physicsModules; 
 
 
         public JetShip(Vector2 pos, float rot, Texture2D tex, Texture2D engineFire, Texture2D shipGunTex, Texture2D bulletTex) : base(pos,rot)
@@ -88,12 +93,22 @@ namespace JetPirate
             maxPower = 6f;
 
             //visual effects
-            leftEngine = new EngineParticles(pos, rot, this, new Vector2(-25, tex.Height*0.05f), engineFire);
-            rightEngine = new EngineParticles(pos, rot, this, new Vector2(tex.Width*0.05f-10, tex.Height * 0.05f), engineFire);
+            leftEngine = new EngineParticles( this, new Vector2(-45, 35), engineFire);
+            rightEngine = new EngineParticles( this, new Vector2(45, 35), engineFire);
 
             //Weapon
-            shipGun = new ShipGun(pos, rot, this, new Vector2(tex.Width/9-14, tex.Height/5), shipGunTex, bulletTex);
+            shipGun = new ShipGun(this, new Vector2(tex.Width/9-14, tex.Height/5), shipGunTex, bulletTex);
 
+            //Physic rectangles for collisions
+            physicsModules = new List<PhysicModule>();
+            physicsModules.Add(new PhysicModule(this, new Vector2(-45, -5), new Vector2(tex.Width / 5, tex.Width /5)));
+            physicsModules.Add(new PhysicModule(this, new Vector2(45, -5), new Vector2(tex.Width / 5, tex.Width / 5)));
+            physicsModules.Add(new PhysicModule(this, new Vector2(45, 25), new Vector2(tex.Width / 5, tex.Width/ 5)));
+            physicsModules.Add(new PhysicModule(this, new Vector2(-45, 25), new Vector2(tex.Width / 5, tex.Width / 5)));
+            physicsModules.Add(new PhysicModule(this, new Vector2(0, 25), new Vector2(tex.Width / 4, tex.Width / 4)));
+            physicsModules.Add(new PhysicModule(this, new Vector2(0, -15), new Vector2(tex.Width / 4, tex.Width / 4)));
+
+            
         }
 
 
@@ -183,11 +198,21 @@ namespace JetPirate
             position += velocity;
 
             #endregion
+
+            #region physic
+            for (int i = 0; i < physicsModules.Count; i++)
+            {
+                physicsModules[i].UpdateMe();
+            }
+
+            
+            #endregion
         }
 
         public void DrawMe(SpriteBatch sp)
         {
-            
+
+
             leftEngine.engineParticles.DrawMe(sp);
             rightEngine.engineParticles.DrawMe(sp);
             
@@ -200,6 +225,11 @@ namespace JetPirate
             //DebugManager.DebugString("Origin: " + origin, new Vector2(0, 66));
 
             // DebugManager.DebugString("LeftEngine distance: " + leftEngine.distance, new Vector2(0,0));
+
+            for (int i = 0; i < physicsModules.Count; i++)
+            {
+                DebugManager.DebugRectangle(physicsModules[i].physicRec);
+            }
             #endregion
         }
     }

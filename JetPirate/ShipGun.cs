@@ -11,9 +11,9 @@ namespace JetPirate
 
         public Gun gun;
 
-        public ShipGun(Vector2 pos, float rot, Object2D par, Vector2 shift, Texture2D tex, Texture2D bulletTex) : base(pos, rot, par, shift) 
+        public ShipGun( Object2D par, Vector2 shift, Texture2D tex, Texture2D bulletTex) : base( par, shift) 
         {
-            gun = new Gun(pos,rot, tex, bulletTex);
+            gun = new Gun(parent.GetPosition(),parent.GetRotation(), tex, bulletTex);
         }
 
         public void UpdateMe(GamePadState oldGP, GamePadState currGP)

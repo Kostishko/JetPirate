@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
 using System;
 using System.Collections.Generic;
 
@@ -18,6 +19,9 @@ namespace JetPirate
         public float timeBetweenEmission;
         private float timer;
 
+        private Random rng;
+        private float emissionCone;
+
         //Particle setting
         private Texture2D partTex;
         private float opacitySpeed;
@@ -31,13 +35,15 @@ namespace JetPirate
         /// <param name="speed">Particles speed</param>
         /// <param name="opacitySpeed">Particles shading speed</param>
         /// <param name="emissionTime">Pause between emission</param>
-        public ParticleSystem(Vector2 pos, float rot, Texture2D tex, float speed, float opacitySpeed, float emissionTime) : base(pos, rot)
+        /// /// <param name="emissionCone">Random direction</param>
+        public ParticleSystem(Vector2 pos, float rot, Texture2D tex, float speed, float opacitySpeed, float emissionTime, float emissionCone) : base(pos, rot)
         {
             partTex = tex;
             //emission
             timeBetweenEmission = emissionTime;
             timer = timeBetweenEmission;
-
+            this.emissionCone = emissionCone;
+            rng=new Random();
             //system control
             isPlaying = false;
             _particles = new List<Particle>();
@@ -66,7 +72,7 @@ namespace JetPirate
             for (int i =0; i<_particles.Count;i++)
             {
                 if (_particles[i].GetState())
-                _particles[i].UpdateMe(Direction, position);
+                _particles[i].UpdateMe(position);
                 
             }
 
@@ -79,8 +85,12 @@ namespace JetPirate
                         //check if we have particles which not in fly
                         if (!_particles[i].GetState())
                         {
+                            //Update direction of particles' flying
+                            float rotateShift = (float)(rng.NextDouble() - 0.5f) * emissionCone * 2;
+                            Direction = new Vector2((float)Math.Sin(Rotation+rotateShift), (float)Math.Cos(Rotation + rotateShift));
+                            Direction.Normalize();
                             //if it is not in a flying - we trigger it to start
-                            _particles[i].TriggerMe(position); //trigger back particle to current system pos
+                            _particles[i].TriggerMe(position, Direction); //trigger back particle to current system pos
                             timer = timeBetweenEmission; 
                             break;
                         }
@@ -128,6 +138,9 @@ namespace JetPirate
         //speed of movement and speed of fading
         private float speed;
         private float opacitySpeed;
+
+        //direction
+        private Vector2 direction;
         
         
         private bool isFlying; //is it triggered particle?
@@ -140,6 +153,7 @@ namespace JetPirate
             _texture = tex;
             position = pos;
             origin = new Vector2(tex.Width/2, tex.Height/2);
+            direction = Vector2.Zero;
             this.speed = speed;
             this.opacitySpeed = opacitySpeed;
             color = Color.Transparent;            
@@ -148,7 +162,7 @@ namespace JetPirate
         }
 
 
-        public void UpdateMe(Vector2 direction, Vector2 startPos)
+        public void UpdateMe( Vector2 startPos)
         {
             if (isFlying) //if it's triggered
             {
@@ -168,7 +182,7 @@ namespace JetPirate
                 //if it's faded to transparent - it's back in untriggered particles pool
                 if (color==Color.Transparent) 
                 {
-                    TriggerMe(startPos);
+                    TriggerMe(startPos, Vector2.Zero);
                 }
             }
             //untriggered particles are faded and always on a particle system position
@@ -184,11 +198,12 @@ namespace JetPirate
             sp.Draw(_texture, position, null, color, Rotation, origin, 1f, SpriteEffects.None, 1f);
         }
 
-        public void TriggerMe(Vector2 startPos)
+        public void TriggerMe(Vector2 startPos, Vector2 dir)
         {
             isFlying = isFlying ? false : true;
 
             position = startPos;
+            direction = dir;
             if (isFlying) { color=Color.White; }            
         }
 

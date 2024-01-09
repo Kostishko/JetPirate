@@ -11,7 +11,7 @@ namespace JetPirate
 
         private float rotation;
 
-        protected Rectangle physicRec;
+//        protected Rectangle physicRec;
 
         public bool isPhysicActive;
         
@@ -28,7 +28,7 @@ namespace JetPirate
         {
             this.position = pos;
             this.Rotation = rot;
-            this.physicRec = new Rectangle(); //default rectangle
+         //   this.physicRec = new Rectangle(); //default rectangle
 
             isPhysicActive = false;
         }
@@ -76,10 +76,10 @@ namespace JetPirate
             return position;
         }
 
-        public Rectangle GetRectangle()
-        {   
-                return physicRec;
-        }
+        //public Rectangle GetRectangle()
+        //{   
+        //      return physicRec;
+        //}
 
     }
 }

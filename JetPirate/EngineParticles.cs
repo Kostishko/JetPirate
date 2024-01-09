@@ -12,9 +12,9 @@ namespace JetPirate
 
         public ParticleSystem engineParticles;
 
-        public EngineParticles(Vector2 pos, float rot, Object2D par, Vector2 shift, Texture2D tex ) : base(pos, rot, par, shift)
+        public EngineParticles(Object2D par, Vector2 shift, Texture2D tex ) : base( par, shift)
         {
-                engineParticles = new ParticleSystem(pos, rot, tex,2f, 15f, 0.2f);
+                engineParticles = new ParticleSystem(parent.GetPosition(),parent.GetRotation(), tex,2f, 15f, 0.2f, 0.5f);
         }
 
         public void UpdateMe(bool play)

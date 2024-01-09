@@ -22,10 +22,10 @@ namespace JetPirate
         public Enemy(Vector2 pos, float rot, Texture2D tex) : base (pos, rot) 
         {
             texture = tex;
-            physicRec = new Rectangle((int)Math.Round(pos.X),(int)Math.Round( pos.Y), tex.Width,tex.Height );
+           // physicRec = new Rectangle((int)Math.Round(pos.X),(int)Math.Round( pos.Y), tex.Width,tex.Height );
             Health = 100f;
             isPhysicActive = true;
-            PhysicManager.AddObject(this);  
+           // PhysicManager.AddObject(this);  
         }
        
 
@@ -42,7 +42,7 @@ namespace JetPirate
         public void Destroyed()
         {
             isPhysicActive=false;
-            PhysicManager.RemoveObject(this);
+          //  PhysicManager.RemoveObject(this);
         }
 
         public void DrawMe(SpriteBatch sp)
@@ -50,7 +50,7 @@ namespace JetPirate
             if (isPhysicActive)
             {
                 sp.Draw(texture, position, null, Color.White, Rotation, Vector2.Zero, 1f, SpriteEffects.None, 1);
-                DebugManager.DebugRectangle(physicRec);
+               // DebugManager.DebugRectangle(physicRec);
             }
         }
 

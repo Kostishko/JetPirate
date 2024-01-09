@@ -12,7 +12,7 @@ namespace JetPirate
         protected float shiftRotation;
         protected float distance;
 
-        public Module(Vector2 pos, float rot, Object2D par, Vector2 shift) : base(pos, rot)
+        public Module(Object2D par, Vector2 shift) : base(par.GetPosition(), par.GetRotation())
         {
             parent = par;
             shiftPosition = shift;
@@ -20,14 +20,13 @@ namespace JetPirate
             distance = (float)Math.Sqrt(Math.Pow(shift.X, 2)+ Math.Pow(shift.Y, 2));
         }
 
-
         public void UpdateMe()
         {
             Rotation = parent.GetRotation()+shiftRotation;
-            shiftPosition = new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation) )*distance;
+            shiftPosition = new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation) )*Math.Clamp(distance, 1, float.MaxValue);
             position = parent.GetPosition()+shiftPosition;
 
-            physicRec.Location = (position-shiftPosition).ToPoint();
+            //physicRec.Location = (position-shiftPosition).ToPoint();
         }
 
         public void DrawMe(SpriteBatch sp)

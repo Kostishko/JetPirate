@@ -8,11 +8,11 @@ namespace JetPirate
 {
     static class PhysicManager
     {
-        static private List<Object2D> physicObjects;
+        static private List<PhysicModule> physicObjects;
 
         static PhysicManager()
         {
-            physicObjects = new List<Object2D>();
+            physicObjects = new List<PhysicModule>();
         }
 
         /// <summary>
@@ -39,12 +39,12 @@ namespace JetPirate
             }
         }
 
-        public static void AddObject(Object2D obj)
+        public static void AddObject(PhysicModule obj)
         {
             physicObjects.Add(obj);
         }
 
-        public static void RemoveObject(Object2D obj)
+        public static void RemoveObject(PhysicModule obj)
         { 
             physicObjects.Remove(obj);
         }

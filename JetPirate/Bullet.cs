@@ -34,17 +34,20 @@ namespace JetPirate
 
         private float flyTimer;
 
+        //physic
+        protected PhysicModule physicBody;
+
         //texture should be squere
         public Bullet(Vector2 pos, float rot, Texture2D tex) : base(pos, rot)
         {
 
 
-            physicRec = new Rectangle((int)Math.Round(pos.X), (int)Math.Round(pos.Y), (int)Math.Round(tex.Width / 2f), (int)Math.Round(tex.Height / 2f));
-
+            // physicRec = new Rectangle((int)Math.Round(pos.X), (int)Math.Round(pos.Y), (int)Math.Round(tex.Width / 2f), (int)Math.Round(tex.Height / 2f));
+            physicBody = new PhysicModule(this, Vector2.Zero, new Vector2(tex.Width / 2, tex.Height / 2));
             //visual
             texture = tex;
 
-            origin = new Vector2(tex.Width / 4, tex.Height / 4);
+            origin = new Vector2(tex.Width / 2, tex.Height / 2);
 
             //gameplay
             damage = 50f;
@@ -55,7 +58,7 @@ namespace JetPirate
             flyTimer = 15f;
 
             //physic
-            PhysicManager.AddObject(this);
+            //PhysicManager.AddObject(this);
         }
 
         public override void Collided(Object2D obj)
@@ -75,7 +78,7 @@ namespace JetPirate
             if (isPhysicActive)
             {
                 sp.Draw(texture, position, null, Color.White, Rotation, origin, 0.5f, SpriteEffects.None, 1);
-                DebugManager.DebugRectangle(physicRec);
+                DebugManager.DebugRectangle(physicBody.physicRec);
             }
         }
         public void BulletFly(Vector2 pos, float rot, Vector2 vel)
@@ -92,7 +95,8 @@ namespace JetPirate
             if (isPhysicActive)
             {
                 position += velocity * speed;
-              //  physicRec.Location = position.ToPoint();
+                //  physicRec.Location = position.ToPoint();
+                physicBody.UpdateMe();
                 FlyTime -= 0.1f;
                 if (FlyTime == 0)
                 {
