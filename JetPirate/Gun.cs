@@ -82,7 +82,7 @@ namespace JetPirate
             position = pos;
 
             //Fire Control
-            if (curState.Buttons.RightShoulder == ButtonState.Released && oldState.Buttons.RightShoulder == ButtonState.Pressed && magValue>0)
+            if (curState.Buttons.X == ButtonState.Released && oldState.Buttons.X== ButtonState.Pressed && magValue>0)
             {
                     for(int i = 0; i<bullets.Count;i++)
                     {

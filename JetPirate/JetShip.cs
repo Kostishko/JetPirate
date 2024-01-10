@@ -2,10 +2,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Content;
 using System;
 using System.Threading.Tasks.Sources;
 using System.Collections.Generic;
-
+using System.Security.Cryptography.X509Certificates;
 
 namespace JetPirate
 {
@@ -82,33 +83,65 @@ namespace JetPirate
         #endregion
 
         //Physic rectangles for collisions
-        private List<PhysicModule> physicsModules; 
+        private List<PhysicModule> physicsModules;
+
+        //Camera (access to effects)
+        private Camera camera;
+
+        #region Damage and health
+        //Technique variables
+        private int health;
+        private int maxHealth;
+        private float invulTimer;
+        private float invulTime;
+        private bool isAlive;
+        //Visual
+        private ParticleSystem explosionsParticles;
+        private ParticleSystem piecesParticles;
+        private float explosionTime;
+        private float explosionTimer;
+        
+        #endregion
 
 
-        public JetShip(Vector2 pos, float rot, Texture2D tex, Texture2D engineFire, Texture2D shipGunTex, Texture2D bulletTex) : base(pos,rot)
+        public JetShip(Vector2 pos, float rot, ContentManager content, Camera cam) : base(pos,rot)
         {
-            texture = tex;
-            origin = new Vector2(tex.Width / 2, tex.Height / 2);
+            texture = content.Load<Texture2D>("Sprites/Ship_03");
+            origin = new Vector2(texture.Width / 2, texture.Height / 2);
             maxGravity = 2f;
             maxPower = 6f;
 
-            //visual effects
-            leftEngine = new EngineParticles( this, new Vector2(-45, 35), engineFire);
-            rightEngine = new EngineParticles( this, new Vector2(45, 35), engineFire);
+            camera = cam;
+
+            //visual effects of engines
+            leftEngine = new EngineParticles( this, new Vector2(-45, 35), content.Load<Texture2D>("fire_left"));
+            rightEngine = new EngineParticles( this, new Vector2(45, 35), content.Load<Texture2D>("fire_left"));
+
+            //visual effects of damage
+            explosionsParticles = new ParticleSystem(position, Rotation, content.Load<Texture2D>("Particles/ExploudParticle"), 1f, 25f, 0f, (float)Math.PI);
+            piecesParticles = new ParticleSystem(position, Rotation, content.Load<Texture2D>("Particles/ParticleBit"), 4f, 10f, 0f, (float)Math.PI );
+            explosionTime = 1f;
+            explosionTimer = 0f;
 
             //Weapon
-            shipGun = new ShipGun(this, new Vector2(tex.Width/9-14, tex.Height/5), shipGunTex, bulletTex);
+            shipGun = new ShipGun(this, new Vector2(texture.Width/9-14, texture.Height/5), content);
 
             //Physic rectangles for collisions
             physicsModules = new List<PhysicModule>();
-            physicsModules.Add(new PhysicModule(this, new Vector2(-45, -5), new Vector2(tex.Width / 5, tex.Width /5)));
-            physicsModules.Add(new PhysicModule(this, new Vector2(45, -5), new Vector2(tex.Width / 5, tex.Width / 5)));
-            physicsModules.Add(new PhysicModule(this, new Vector2(45, 25), new Vector2(tex.Width / 5, tex.Width/ 5)));
-            physicsModules.Add(new PhysicModule(this, new Vector2(-45, 25), new Vector2(tex.Width / 5, tex.Width / 5)));
-            physicsModules.Add(new PhysicModule(this, new Vector2(0, 25), new Vector2(tex.Width / 4, tex.Width / 4)));
-            physicsModules.Add(new PhysicModule(this, new Vector2(0, -15), new Vector2(tex.Width / 4, tex.Width / 4)));
+            physicsModules.Add(new PhysicModule(this, new Vector2(-45, -5), new Vector2(texture.Width / 5, texture.Width / 5)));
+            physicsModules.Add(new PhysicModule(this, new Vector2(45, -5), new Vector2(texture.Width / 5, texture.Width / 5)));
+            physicsModules.Add(new PhysicModule(this, new Vector2(45, 25), new Vector2(texture.Width / 5, texture.Width/ 5)));
+            physicsModules.Add(new PhysicModule(this, new Vector2(-45, 25), new Vector2(texture.Width / 5, texture.Width / 5)));
+            physicsModules.Add(new PhysicModule(this, new Vector2(0, 25), new Vector2(texture.Width / 4, texture.Width / 4)));
+            physicsModules.Add(new PhysicModule(this, new Vector2(0, -15), new Vector2(texture.Width / 4, texture.Width / 4)));
 
-            
+            #region Restoring
+            maxHealth = 5;
+            invulTime = 10f;
+            Restore();
+            #endregion
+
+
         }
 
 
@@ -205,19 +238,71 @@ namespace JetPirate
                 physicsModules[i].UpdateMe();
             }
 
-            
+
             #endregion
+
+
+            #region health and damage
+            //visual effects
+            explosionsParticles.UpdateMe(position, Rotation);
+            piecesParticles.UpdateMe(position, Rotation);
+            if(explosionTimer>0)
+            {
+                explosionTimer -= 0.1f;
+                explosionsParticles.Play();
+                piecesParticles.Play();
+            }
+            else
+            {
+                explosionsParticles.Stop();
+                piecesParticles.Stop();
+            }
+
+            //test
+            if(gPad.Buttons.Y==ButtonState.Released&&oldGPad.Buttons.Y==ButtonState.Pressed)
+            {
+                TakeDamage();
+            }
+           
+
+
+
+            #endregion
+        }
+
+
+        //collision treatment 
+        public override void Collided(Object2D obj)
+        {
+            //Meet Enemy - the deleting one health point
+            if (obj is Enemy)
+            {
+                Enemy enemy = (Enemy)obj;
+                enemy.Destroyed();
+
+                TakeDamage();
+
+            }
         }
 
         public void DrawMe(SpriteBatch sp)
         {
 
+            //drawing the ship if it's alive
+            if (isAlive)
+            {
+                leftEngine.engineParticles.DrawMe(sp);
+                rightEngine.engineParticles.DrawMe(sp);
 
-            leftEngine.engineParticles.DrawMe(sp);
-            rightEngine.engineParticles.DrawMe(sp);
-            
-            sp.Draw(texture, position, null, Color.White, Rotation, origin, 1f, SpriteEffects.None, 1f);
-            shipGun.gun.DrawMe(sp);
+                sp.Draw(texture, position, null, Color.White, Rotation, origin, 1f, SpriteEffects.None, 1f);
+                shipGun.gun.DrawMe(sp);
+
+                //damage visual
+                piecesParticles.DrawMe(sp);
+                explosionsParticles.DrawMe(sp);
+                
+            }
+
             #region debug
             //DebugManager.DebugString("current power: " + currentPower, new Vector2(0, 0));
             //DebugManager.DebugString("Rotation: "+ Rotation, new Vector2(0, 22));    
@@ -228,9 +313,48 @@ namespace JetPirate
 
             for (int i = 0; i < physicsModules.Count; i++)
             {
-                DebugManager.DebugRectangle(physicsModules[i].physicRec);
+                DebugManager.DebugRectangle(physicsModules[i].GetRectangle());
             }
             #endregion
         }
+
+
+
+        #region health and damage
+        //Health getting
+        public int GetHealth()
+        {
+            return health;
+        }
+
+        //Taking damage
+        public void TakeDamage()
+        {
+
+            health--;
+            camera.StartShaking(10);
+            //explosions particles
+            explosionTimer = explosionTime;
+            //death treatment
+            if (health == 0)
+            {
+                isAlive = false;
+            }
+        }
+
+
+        /// <summary>
+        /// Restore the ship when we need
+        /// </summary>
+        public void Restore()
+        {
+            health = maxHealth;
+            invulTimer = 0;
+            position = Vector2.Zero;
+            isAlive = true;
+        }
+
+
+        #endregion
     }
 }

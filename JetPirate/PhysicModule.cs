@@ -13,7 +13,11 @@ namespace JetPirate
     internal class PhysicModule : Module
     {
 
-        public Rectangle physicRec;
+
+
+        private Rectangle physicRec;
+        private Vector2 rectangleHalfSize;
+
         /// <summary>
         /// Module with body
         /// </summary>
@@ -26,18 +30,20 @@ namespace JetPirate
         {
             //physic
             physicRec = new Rectangle((int)Math.Round(parent.GetPosition().X), (int)Math.Round(parent.GetPosition().Y), (int)Math.Round(rectangleSize.X), (int)Math.Round(rectangleSize.Y));
+            rectangleHalfSize = new Vector2(physicRec.Width / 2, physicRec.Height / 2);
             PhysicManager.AddObject(this);
         }
 
         public new void UpdateMe()
         {
             base.UpdateMe();
-            physicRec.Location = (position- new Vector2(physicRec.Width/2, physicRec.Height/2)).ToPoint();
+            // following for rectangle (it can't rotate)
+            physicRec.Location = (position- rectangleHalfSize).ToPoint();
             ///treatment of parent rotation.
 
         }
 
-        public new void Collided(Object2D obj)
+        public new void Collided(Object2D obj) // sending collide and information about collided object to parent
         {
             parent.Collided(obj);
         }
