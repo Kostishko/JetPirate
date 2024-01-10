@@ -47,6 +47,8 @@ namespace JetPirate
 
         public void UpdateMe(JetShip jet)
         {
+
+
             if (jet.GetPosition().X + screenSize.X / (2 * zoom)<rightBottomBorder.X && jet.GetPosition().X+screenSize.X/(2*zoom)>leftUpperBorder.X)
             {
                 position.X = (-jet.GetPosition().X + screenSize.X / (2 * zoom));
@@ -60,6 +62,11 @@ namespace JetPirate
             Shaking(jet.GetPosition());
         }
 
+
+        /// <summary>
+        /// Shaking
+        /// </summary>
+        /// <param name="jetPos"></param>
         public void Shaking(Vector2 jetPos)
         {
             if (shakeTimer > 0)
@@ -85,6 +92,10 @@ namespace JetPirate
             }
         }
 
+        /// <summary>
+        /// Initialise the shaking with power (unfortunatelly timer of shaking is needed)
+        /// </summary>
+        /// <param name="power"></param>
         public void StartShaking(int power)
         {
             shakeTimer = shakeTime;

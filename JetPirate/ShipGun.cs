@@ -10,7 +10,7 @@ namespace JetPirate
     internal class ShipGun : Module
     {
 
-        public Gun gun;
+        private Gun gun;
 
         public ShipGun( Object2D par, Vector2 shift, ContentManager content) : base( par, shift) 
         {
@@ -22,7 +22,13 @@ namespace JetPirate
             base.UpdateMe();
             gun.UpdateMe(currGP, oldGP, position);
         }
+
+        public Gun GetGun()
+        { 
+            return gun; 
+        }
         
+
 
     }
 }

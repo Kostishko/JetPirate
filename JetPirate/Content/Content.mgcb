@@ -92,6 +92,13 @@
 /processorParam:TextureFormat=Color
 /build:fire.png
 
+#begin Fonts/MajorFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/MajorFont.spritefont
+
 #begin gun.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -89,12 +89,14 @@ namespace JetPirate
         private Camera camera;
 
         #region Damage and health
+
         //Technique variables
         private int health;
         private int maxHealth;
         private float invulTimer;
         private float invulTime;
         private bool isAlive;
+
         //Visual
         private ParticleSystem explosionsParticles;
         private ParticleSystem piecesParticles;
@@ -112,6 +114,9 @@ namespace JetPirate
             maxPower = 6f;
 
             camera = cam;
+
+
+            
 
             //visual effects of engines
             leftEngine = new EngineParticles( this, new Vector2(-45, 35), content.Load<Texture2D>("fire_left"));
@@ -135,9 +140,10 @@ namespace JetPirate
             physicsModules.Add(new PhysicModule(this, new Vector2(0, 25), new Vector2(texture.Width / 4, texture.Width / 4)));
             physicsModules.Add(new PhysicModule(this, new Vector2(0, -15), new Vector2(texture.Width / 4, texture.Width / 4)));
 
-            #region Restoring
+            #region Restoring and health
             maxHealth = 5;
-            invulTime = 10f;
+            invulTime = 30f;
+            
             Restore();
             #endregion
 
@@ -263,6 +269,11 @@ namespace JetPirate
             {
                 TakeDamage();
             }
+
+            if(invulTimer>0)
+            {
+                invulTimer -= 0.1f;
+            }
            
 
 
@@ -271,37 +282,42 @@ namespace JetPirate
         }
 
 
-        //collision treatment 
-        public override void Collided(Object2D obj)
-        {
-            //Meet Enemy - the deleting one health point
-            if (obj is Enemy)
-            {
-                Enemy enemy = (Enemy)obj;
-                enemy.Destroyed();
-
-                TakeDamage();
-
-            }
-        }
-
         public void DrawMe(SpriteBatch sp)
         {
 
             //drawing the ship if it's alive
             if (isAlive)
             {
+                //engines particles
                 leftEngine.engineParticles.DrawMe(sp);
                 rightEngine.engineParticles.DrawMe(sp);
 
-                sp.Draw(texture, position, null, Color.White, Rotation, origin, 1f, SpriteEffects.None, 1f);
-                shipGun.gun.DrawMe(sp);
+                if(invulTimer>0)
+                {
+                    if ((int)Math.Round(invulTimer)%2==0)
+                    {
 
-                //damage visual
-                piecesParticles.DrawMe(sp);
-                explosionsParticles.DrawMe(sp);
+                    }
+                    else
+                    {
+                        sp.Draw(texture, position, null, Color.White, Rotation, origin, 1f, SpriteEffects.None, 1f);
+                    }
+                }
+                else
+                {
+                    sp.Draw(texture, position, null, Color.White, Rotation, origin, 1f, SpriteEffects.None, 1f);
+                }
+                //jet itself
                 
+
+                //gun
+                shipGun.GetGun().DrawMe(sp);                
             }
+
+
+            //damage visual
+            piecesParticles.DrawMe(sp);
+            explosionsParticles.DrawMe(sp);
 
             #region debug
             //DebugManager.DebugString("current power: " + currentPower, new Vector2(0, 0));
@@ -319,15 +335,39 @@ namespace JetPirate
         }
 
 
+        //collision treatment 
+        public override void Collided(Object2D obj)
+        {
+            //Meet Enemy - the deleting one health point
+            if (obj is Enemy)
+            {
+                if (invulTimer <= 0)
+                {
+                    //enemy destroying
+                    Enemy enemy = (Enemy)obj;
+                    enemy.Destroyed();
 
-        #region health and damage
-        //Health getting
+                    //ship damage
+                    TakeDamage();
+                }
+
+            }
+        }
+
+
+        #region health and damage getting
+        /// <summary>
+        /// Current health of the ship
+        /// </summary>
+        /// <returns></returns>
         public int GetHealth()
         {
             return health;
         }
 
-        //Taking damage
+        /// <summary>
+        /// The Ship always get 1 damage and go to invulable state for short time
+        /// </summary>
         public void TakeDamage()
         {
 
@@ -335,6 +375,7 @@ namespace JetPirate
             camera.StartShaking(10);
             //explosions particles
             explosionTimer = explosionTime;
+            invulTimer = invulTime;
             //death treatment
             if (health == 0)
             {
@@ -356,5 +397,14 @@ namespace JetPirate
 
 
         #endregion
+
+        /// <summary>
+        /// Return the current state of gun
+        /// </summary>
+        /// <returns></returns>
+        public Gun GetGun()
+        {
+            return shipGun.GetGun();
+        }
     }
 }

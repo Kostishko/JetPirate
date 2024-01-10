@@ -20,6 +20,9 @@ namespace JetPirate
         //Camera
         private Camera cam;
 
+        //UI
+        private UIManager uiManager;
+
         //Controller
         private GamePadState  currState;
         private GamePadState prevState;
@@ -63,7 +66,8 @@ namespace JetPirate
             //Tested enemy
             enemy = new Enemy(Vector2.Zero, 0f, Content.Load<Texture2D>("Enemy"));
 
-
+            //UI
+            uiManager = new UIManager(cam, jetShip, Content);
 
 
             //Debugger
@@ -84,6 +88,8 @@ namespace JetPirate
 
             jetShip.UpdateMe(currState, prevState, gameTime);
             cam.UpdateMe(jetShip);
+
+            uiManager.UpdateMe();
 
             //if(prevState.Buttons.X==ButtonState.Pressed&&currState.Buttons.X==ButtonState.Released)
             //{
@@ -117,7 +123,7 @@ namespace JetPirate
             //tested enemy
             enemy.DrawMe(_spriteBatch);
 
-
+            uiManager.DrawMe(_spriteBatch);
 
             _spriteBatch.End();
             // TODO: Add your drawing code here

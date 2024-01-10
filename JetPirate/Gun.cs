@@ -56,7 +56,7 @@ namespace JetPirate
 
             //reloading var
             ReloadTimer = 0;
-            reloadTime = 3f;
+            reloadTime = 10f;
 
             //magazine
             magCapacity = 10;
@@ -140,6 +140,42 @@ namespace JetPirate
             {
                 bullets[i].DrawMe(sp);
             }
+        }
+
+        /// <summary>
+        /// Returns current magazine capacity
+        /// </summary>
+        /// <returns></returns>
+        public int GetMag()
+        {
+           return magValue;
+        }
+
+        /// <summary>
+        /// Returns current reload timer
+        /// </summary>
+        /// <returns></returns>
+        public float GetReloadTimer()
+        {
+            return ReloadTimer;
+        }
+
+        /// <summary>
+        /// Returns overall time of reloading
+        /// </summary>
+        /// <returns></returns>
+        public float GetReloadTime()
+        {
+            return reloadTime;
+        }
+
+        /// <summary>
+        /// Returns standart mag capacity
+        /// </summary>
+        /// <returns></returns>
+        public int GetMagCapacity()
+        {
+            return magCapacity;
         }
 
     }
