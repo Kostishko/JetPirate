@@ -72,13 +72,6 @@ namespace JetPirate
                 }
             }
 
-
-            //draw all bullets in magazine
-            //for (int i = 0; i <gunUI.GetMag(); i++)
-            //{
-            //    sp.Draw(bulletCounterPic, ancorUI + new Vector2(50, 120 + i * 25), Color.White);
-            //}
-
             //reload indicator
             if(gunUI.GetReloadTimer()>0&& gunUI.GetReloadTimer()!=gunUI.GetReloadTime())
             {
