@@ -58,16 +58,21 @@ namespace JetPirate
             sp.Draw(shipHealthPic, ancorUI + new Vector2(25, 50), null, Color.White, 0f, Vector2.Zero, 0.7f, SpriteEffects.None, 0f);
             sp.DrawString(fontUI, " X " + shipUI.GetHealth(), ancorUI + new Vector2(100, 45), Color.White);
 
+
+            // draw all magazine capacity
             for (int i = 0; i < gunUI.GetMagCapacity(); i++)
             {
                 sp.Draw(bulletCounterPic, ancorUI + new Vector2(50, 120 + i * 25), Color.Gray);
             }
 
+
+            //draw all bullets in magazine
             for (int i = 0; i <gunUI.GetMag(); i++)
             {
                 sp.Draw(bulletCounterPic, ancorUI + new Vector2(50, 120 + i * 25), Color.White);
             }
 
+            //reload indicator
             if(gunUI.GetReloadTimer()>0&& gunUI.GetReloadTimer()!=gunUI.GetReloadTime())
             {
                 sp.DrawString(fontUI, "RELOAD", ancorUI + new Vector2(25, 145), Color.Red, 0.5f, Vector2.Zero, 0.5f, SpriteEffects.None,0f);
