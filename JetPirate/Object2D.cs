@@ -76,6 +76,16 @@ namespace JetPirate
             return position;
         }
 
+
+        /// <summary>
+        /// Return parent for physic module and this for Object2D
+        /// </summary>
+        /// <returns></returns>
+        public virtual Object2D GetParent()
+        {
+            return this;
+        }
+
         //public Rectangle GetRectangle()
         //{   
         //      return physicRec;

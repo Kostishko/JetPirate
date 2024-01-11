@@ -31,7 +31,7 @@ namespace JetPirate
         private float rightRotation;
         private float leftRotation;
 
-        
+
         private float maxPower; //Max power for both engines
         //engines' powers. Clamp as half of maxPower. Sum them to final power;
         private float leftPower;
@@ -60,7 +60,7 @@ namespace JetPirate
         }//right power
         public float currentPower
         {
-            get => Math.Clamp(LeftPower+RightPower,0,maxPower);           
+            get => Math.Clamp(LeftPower + RightPower, 0, maxPower);
         }  //variable for sum of leftPower and RightPower, only get
         private float maxGravity; // use gravity here because there is no more objects that should be affected by that
 
@@ -73,7 +73,7 @@ namespace JetPirate
             }
             set
             {
-                currentGravity = Math.Clamp(value, 0,maxGravity);
+                currentGravity = Math.Clamp(value, 0, maxGravity);
             }
         } //Gravity will less if power closer to max
 
@@ -96,17 +96,18 @@ namespace JetPirate
         private float invulTimer;
         private float invulTime;
         private bool isAlive;
+        private Vector2 startPos;
 
         //Visual
         private ParticleSystem explosionsParticles;
         private ParticleSystem piecesParticles;
         private float explosionTime;
         private float explosionTimer;
-        
+
         #endregion
 
 
-        public JetShip(Vector2 pos, float rot, ContentManager content, Camera cam) : base(pos,rot)
+        public JetShip(Vector2 pos, float rot, ContentManager content, Camera cam) : base(pos, rot)
         {
             texture = content.Load<Texture2D>("Sprites/Ship_03");
             origin = new Vector2(texture.Width / 2, texture.Height / 2);
@@ -116,26 +117,26 @@ namespace JetPirate
             camera = cam;
 
 
-            
+
 
             //visual effects of engines
-            leftEngine = new EngineParticles( this, new Vector2(-45, 35), content.Load<Texture2D>("fire_left"));
-            rightEngine = new EngineParticles( this, new Vector2(45, 35), content.Load<Texture2D>("fire_left"));
+            leftEngine = new EngineParticles(this, new Vector2(-45, 35), content.Load<Texture2D>("fire_left"));
+            rightEngine = new EngineParticles(this, new Vector2(45, 35), content.Load<Texture2D>("fire_left"));
 
             //visual effects of damage
             explosionsParticles = new ParticleSystem(position, Rotation, content.Load<Texture2D>("Particles/ExploudParticle"), 1f, 25f, 0f, (float)Math.PI);
-            piecesParticles = new ParticleSystem(position, Rotation, content.Load<Texture2D>("Particles/ParticleBit"), 4f, 10f, 0f, (float)Math.PI );
+            piecesParticles = new ParticleSystem(position, Rotation, content.Load<Texture2D>("Particles/ParticleBit"), 4f, 10f, 0f, (float)Math.PI);
             explosionTime = 1f;
             explosionTimer = 0f;
 
             //Weapon
-            shipGun = new ShipGun(this, new Vector2(texture.Width/9-14, texture.Height/5), content);
+            shipGun = new ShipGun(this, new Vector2(texture.Width / 9 - 14, texture.Height / 5), content);
 
             //Physic rectangles for collisions
             physicsModules = new List<PhysicModule>();
             physicsModules.Add(new PhysicModule(this, new Vector2(-45, -5), new Vector2(texture.Width / 5, texture.Width / 5)));
             physicsModules.Add(new PhysicModule(this, new Vector2(45, -5), new Vector2(texture.Width / 5, texture.Width / 5)));
-            physicsModules.Add(new PhysicModule(this, new Vector2(45, 25), new Vector2(texture.Width / 5, texture.Width/ 5)));
+            physicsModules.Add(new PhysicModule(this, new Vector2(45, 25), new Vector2(texture.Width / 5, texture.Width / 5)));
             physicsModules.Add(new PhysicModule(this, new Vector2(-45, 25), new Vector2(texture.Width / 5, texture.Width / 5)));
             physicsModules.Add(new PhysicModule(this, new Vector2(0, 25), new Vector2(texture.Width / 4, texture.Width / 4)));
             physicsModules.Add(new PhysicModule(this, new Vector2(0, -15), new Vector2(texture.Width / 4, texture.Width / 4)));
@@ -143,7 +144,8 @@ namespace JetPirate
             #region Restoring and health
             maxHealth = 5;
             invulTime = 30f;
-            
+            startPos = pos;
+
             Restore();
             #endregion
 
@@ -158,7 +160,7 @@ namespace JetPirate
 
             #region movement
             //Rotate and increse power with Triggers and decrease that if Triggers released
-            if (gPad.Triggers.Right!=0)
+            if (gPad.Triggers.Right != 0)
             {
                 if (gPad.Triggers.Left == 0)
                 {
@@ -174,14 +176,14 @@ namespace JetPirate
                 rightEngine.UpdateMe(false);
             }
 
-            if(gPad.Triggers.Left!=0) 
+            if (gPad.Triggers.Left != 0)
             {
                 if (gPad.Triggers.Right == 0)
                 {
                     rightRotation += 0.02f * gPad.Triggers.Left;
                 }
                 //Rotation += 0.02f * gPad.Triggers.Right;
-                RightPower+=0.01f* gPad.Triggers.Left;
+                RightPower += 0.01f * gPad.Triggers.Left;
                 leftEngine.UpdateMe(true);
             }
             else
@@ -191,24 +193,24 @@ namespace JetPirate
             }
 
             //Inertion for rotation
-            if (leftRotation<0)
+            if (leftRotation < 0)
             {
                 Rotation -= 0.015f;
                 leftRotation += 0.015f;
             }
-            if(rightRotation>0)
+            if (rightRotation > 0)
             {
                 Rotation += 0.015f;
                 rightRotation -= 0.015f;
             }
-            
+
 
             //Gravitation compute (maybe add something more complex later)
             CurrentGravity = maxGravity;
 
             // velocity that create player
-            planVelocity = new Vector2((float)Math.Sin(Rotation) * currentPower, - (float)Math.Cos(Rotation) * currentPower + CurrentGravity);
-            
+            planVelocity = new Vector2((float)Math.Sin(Rotation) * currentPower, -(float)Math.Cos(Rotation) * currentPower + CurrentGravity);
+
             //Inertion for velocity
             if (velX != planVelocity.X)
             {
@@ -252,7 +254,7 @@ namespace JetPirate
             //visual effects
             explosionsParticles.UpdateMe(position, Rotation);
             piecesParticles.UpdateMe(position, Rotation);
-            if(explosionTimer>0)
+            if (explosionTimer > 0)
             {
                 explosionTimer -= 0.1f;
                 explosionsParticles.Play();
@@ -265,16 +267,16 @@ namespace JetPirate
             }
 
             //test
-            if(gPad.Buttons.Y==ButtonState.Released&&oldGPad.Buttons.Y==ButtonState.Pressed)
+            if (gPad.Buttons.Y == ButtonState.Released && oldGPad.Buttons.Y == ButtonState.Pressed)
             {
                 TakeDamage();
             }
 
-            if(invulTimer>0)
+            if (invulTimer > 0)
             {
                 invulTimer -= 0.1f;
             }
-           
+
 
 
 
@@ -292,9 +294,9 @@ namespace JetPirate
                 leftEngine.engineParticles.DrawMe(sp);
                 rightEngine.engineParticles.DrawMe(sp);
 
-                if(invulTimer>0)
+                if (invulTimer > 0)
                 {
-                    if ((int)Math.Round(invulTimer)%2==0)
+                    if ((int)Math.Round(invulTimer) % 2 == 0)
                     {
 
                     }
@@ -308,10 +310,10 @@ namespace JetPirate
                     sp.Draw(texture, position, null, Color.White, Rotation, origin, 1f, SpriteEffects.None, 1f);
                 }
                 //jet itself
-                
+
 
                 //gun
-                shipGun.GetGun().DrawMe(sp);                
+                shipGun.GetGun().DrawMe(sp);
             }
 
 
@@ -383,6 +385,14 @@ namespace JetPirate
             }
         }
 
+        /// <summary>
+        /// Set position if it's needed to teleport the jet
+        /// </summary>
+        /// <param name="pos"></param>
+        public void SetPosition(Vector2 pos)
+        {
+            position = pos;
+        }
 
         /// <summary>
         /// Restore the ship when we need
@@ -393,6 +403,7 @@ namespace JetPirate
             invulTimer = 0;
             position = Vector2.Zero;
             isAlive = true;
+            position = startPos;
         }
 
 

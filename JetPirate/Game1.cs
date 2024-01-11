@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
 namespace JetPirate
 {
@@ -13,12 +14,13 @@ namespace JetPirate
 
         //Ship - player
         private JetShip jetShip;
-
-        //tested particles
-        //private ParticleSystem _particleSystem;
-
+        
         //Camera
         private Camera cam;
+
+        //Background
+        private Background background;
+        private Water water;
 
         //UI
         private UIManager uiManager;
@@ -54,11 +56,15 @@ namespace JetPirate
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+
+
+
             //camera initialising
-            cam = new Camera(Vector2.Zero, new Vector2(-2560, -1440), new Vector2(2560, 1440), new Vector2(1280, 720));
+            cam = new Camera(Vector2.Zero, new Vector2(-2560, -2880+720), new Vector2(2560, -370), new Vector2(1280, 720));
+
 
             // jetShip = new JetShipTest2(Content.Load<Texture2D>("jetship01"), new Vector2(400, 100));
-            jetShip = new JetShip(new Vector2(200, 200), 0f, Content, cam);
+            jetShip = new JetShip(new Vector2(0, -1000), 0f, Content, cam);
 
             //tested particles
             //_particleSystem = new ParticleSystem(new Vector2(200, 200), -MathHelper.Pi, Content.Load<Texture2D>("fire"), 2f,10f,1f);
@@ -68,6 +74,10 @@ namespace JetPirate
 
             //UI
             uiManager = new UIManager(cam, jetShip, Content);
+
+            //Background
+            background = new Background(Vector2.Zero, 0f, Content, jetShip);
+            water = new Water(new Vector2(0,-450), 0f, jetShip, Content);
 
 
             //Debugger
@@ -89,21 +99,10 @@ namespace JetPirate
             jetShip.UpdateMe(currState, prevState, gameTime);
             cam.UpdateMe(jetShip);
 
+            background.UpdateMe();
+            water.UpdateMe();
             uiManager.UpdateMe();
 
-            //if(prevState.Buttons.X==ButtonState.Pressed&&currState.Buttons.X==ButtonState.Released)
-            //{
-            //    cam.StartShaking(10);
-            //}
-            //  _particleSystem.UpdateMe(jetShip.position, -jetShip.RealRotate);
-            //if(Keyboard.GetState().IsKeyDown(Keys.A)|| Keyboard.GetState().IsKeyDown(Keys.D))
-            //{
-            //    _particleSystem.Play();
-            //}
-            //else
-            //{
-            //    _particleSystem.Stop();
-            //}
             prevState = currState;
 
             base.Update(gameTime);
@@ -115,7 +114,11 @@ namespace JetPirate
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, cam.GetCam());
 
-          //  _particleSystem.DrawMe(_spriteBatch);
+            //Background
+            background.DrawMe(_spriteBatch);
+            water.DrawMe(_spriteBatch);
+
+            //  _particleSystem.DrawMe(_spriteBatch);
             jetShip.DrawMe(_spriteBatch);
 
             DebugManager.DebugString("cam pos:" + cam.position, new Vector2(jetShip.GetPosition().X, jetShip.GetPosition().Y));
@@ -123,6 +126,9 @@ namespace JetPirate
             //tested enemy
             enemy.DrawMe(_spriteBatch);
 
+
+
+            //UI drawning
             uiManager.DrawMe(_spriteBatch);
 
             _spriteBatch.End();

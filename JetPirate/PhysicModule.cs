@@ -31,6 +31,7 @@ namespace JetPirate
             //physic
             physicRec = new Rectangle((int)Math.Round(parent.GetPosition().X), (int)Math.Round(parent.GetPosition().Y), (int)Math.Round(rectangleSize.X), (int)Math.Round(rectangleSize.Y));
             rectangleHalfSize = new Vector2(physicRec.Width / 2, physicRec.Height / 2);
+            isPhysicActive = true;
             PhysicManager.AddObject(this);
         }
 
@@ -45,8 +46,12 @@ namespace JetPirate
 
         public new void Collided(Object2D obj) // sending collide and information about collided object to parent
         {
-            parent.Collided(obj);
+         
+            
+                parent.Collided(obj.GetParent());
+            
         }
+
 
         public Rectangle GetRectangle()
         {

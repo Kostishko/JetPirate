@@ -37,6 +37,7 @@ namespace JetPirate
             this.cam = cam;
             shipUI = jetShip;
             gunUI = shipUI.GetGun();
+            
 
 
             //UI pics

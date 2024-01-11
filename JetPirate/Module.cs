@@ -34,5 +34,14 @@ namespace JetPirate
 
         }
 
+        /// <summary>
+        /// Return parent
+        /// </summary>
+        /// <returns></returns>
+        public override Object2D GetParent()
+        {
+            return parent;
+        }
+
     }
 }

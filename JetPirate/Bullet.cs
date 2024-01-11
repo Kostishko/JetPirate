@@ -44,6 +44,8 @@ namespace JetPirate
 
             // physicRec = new Rectangle((int)Math.Round(pos.X), (int)Math.Round(pos.Y), (int)Math.Round(tex.Width / 2f), (int)Math.Round(tex.Height / 2f));
             physicBody = new PhysicModule(this, Vector2.Zero, new Vector2(tex.Width / 2, tex.Height / 2));
+            physicBody.isPhysicActive = false;
+
             //visual
             texture = tex;
 
@@ -69,13 +71,14 @@ namespace JetPirate
                 Enemy enemy = (Enemy)obj;
                 enemy.TakeDamage(damage);
                 this.isPhysicActive = false;
+                physicBody.isPhysicActive = false;
                 FlyTime = 0;
             }
         }
 
         public void DrawMe(SpriteBatch sp)
         {
-            if (isPhysicActive)
+            if (isPhysicActive&& physicBody.isPhysicActive )
             {
                 sp.Draw(texture, position, null, Color.White, Rotation, origin, 0.5f, SpriteEffects.None, 1);
                 DebugManager.DebugRectangle(physicBody.GetRectangle());
@@ -84,6 +87,7 @@ namespace JetPirate
         public void BulletFly(Vector2 pos, float rot, Vector2 vel)
         {
             isPhysicActive = true;
+            physicBody.isPhysicActive = true;
             Rotation = rot;
             position = pos;
             velocity = vel;
@@ -101,6 +105,7 @@ namespace JetPirate
                 if (FlyTime == 0)
                 {
                     isPhysicActive = false;
+                    physicBody.isPhysicActive = false;
                 }
             }
         }

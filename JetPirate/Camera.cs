@@ -34,7 +34,9 @@ namespace JetPirate
             rng = new Random();
             shakeTime = 1.5f;
             shakeTimer = 0;
-            
+
+
+
         }
 
         public Matrix GetCam()
