@@ -69,7 +69,7 @@ namespace JetPirate
             if (obj is Enemy)
             {
                 Enemy enemy = (Enemy)obj;
-                enemy.TakeDamage(damage);
+                enemy.Destroyed();
                 this.isPhysicActive = false;
                 physicBody.isPhysicActive = false;
                 FlyTime = 0;
