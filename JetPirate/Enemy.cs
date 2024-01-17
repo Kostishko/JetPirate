@@ -26,9 +26,8 @@ namespace JetPirate
         private Vector2 pivotPoint;
 
         //visual
-        private Texture2D texture;
-        private Rectangle frameRectangle;
-        private ParticleSystem engineParticels; // to think - maybe I need a module for them? 
+        private Texture2D texture;        
+        private ParticleSystem engineParticles; // to think - maybe I need a module for them? 
         private ParticleSystem explosionParticles;
         private float explosionTime; //time and timer for particles of explosion
         private float explosionTimer;
@@ -59,24 +58,13 @@ namespace JetPirate
         public void UpdateMe()
         {
             if (isActive)
-            {
-                
-                if(waveType == EnemyManager.WaveType.Round) //if movement aroiund the ship
-                {
-                    Rotation += speed;
-                    position += new Vector2(pivotPoint.X+440 * (float)Math.Sin(Rotation),pivotPoint.Y+440 * (float)Math.Cos(Rotation));
-                    CheckBorders();
-                }
-
-                
-                if(waveType == EnemyManager.WaveType.Target) //once aimed target
-                {
-                    position += velocity * speed;
-                    CheckBorders();
-                }
+            {               
+                position += velocity * speed;
+                CheckBorders();
+               
 
                 //Particles movement to this enemy
-                engineParticels.UpdateMe(position, Rotation);
+                engineParticles.UpdateMe(position, Rotation);
                 explosionParticles.UpdateMe(position, Rotation);                
 
                 //physic update
@@ -93,7 +81,7 @@ namespace JetPirate
             if (isActive) //drawning only if the enemy is active
             {
                 sp.Draw(texture, position, null, Color.White, Rotation, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-                engineParticels.DrawMe(sp);               
+                engineParticles.DrawMe(sp);               
                 //add engine particles here
             }
             if (!isActive)
@@ -118,26 +106,14 @@ namespace JetPirate
         //        this.Destroyed();       
         //}
 
-        public void ResetMe(float speed, Vector2 shipPos, EnemyManager.WaveType waveType, Vector2 startPos )
-        {
-            
+        public void ResetMe(float speed, Vector2 shipPos, Vector2 startPos )
+        {            
             this.speed = speed;
             pivotPoint = shipPos;
-            this.waveType = waveType;
+            position = startPos;
+            velocity = new Vector2(position.X - pivotPoint.X, position.Y - pivotPoint.Y);
+            velocity.Normalize();
             texture = EnemyManager.GetTexture();
-
-            if (waveType == EnemyManager.WaveType.Round)
-            {
-                position = new Vector2(shipPos.X, shipPos.Y - 440);
-            }
-
-            if(waveType == EnemyManager.WaveType.Target)
-            {
-                position = startPos;
-                Rotation = (float)Math.Atan2((double)(position.Y - pivotPoint.Y), (double)(position.X - pivotPoint.X));
-                velocity = new Vector2((float)Math.Sin(Rotation), (float)Math.Cos(Rotation));   
-            }
-
             isActive = true;
             physicModuleOne.isPhysicActive = true;
             physicModuleTwo.isPhysicActive=true;

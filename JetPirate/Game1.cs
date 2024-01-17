@@ -70,7 +70,7 @@ namespace JetPirate
             //_particleSystem = new ParticleSystem(new Vector2(200, 200), -MathHelper.Pi, Content.Load<Texture2D>("fire"), 2f,10f,1f);
 
             //Tested enemy
-            enemy = new Enemy(Vector2.Zero, 0f, Content.Load<Texture2D>("Enemy"));
+            //enemy = new Enemy(Vector2.Zero, 0f, Content.Load<Texture2D>("Enemy"));
 
             //UI
             uiManager = new UIManager(cam, jetShip, Content);
@@ -124,7 +124,7 @@ namespace JetPirate
             DebugManager.DebugString("cam pos:" + cam.position, new Vector2(jetShip.GetPosition().X, jetShip.GetPosition().Y));
 
             //tested enemy
-            enemy.DrawMe(_spriteBatch);
+            //enemy.DrawMe(_spriteBatch);
 
 
 

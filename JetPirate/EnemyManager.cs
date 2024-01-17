@@ -32,15 +32,7 @@ namespace JetPirate
         private float timerBetweenWave; // current time to next wave
         private float timeBetweenEnemies;// time between enemies due the wave
         private float timerBetweenEnemies; // current timer between enemies in the wave
-        private float enemiesSpeed; //speed on the current wave
-        
-        public enum WaveType : byte// movement pattern for enemy
-        {
-            Target,
-            Cosin,
-            Round
-        }
-        private WaveType currentType;
+        private float enemiesSpeed; //speed on the current wave       
 
         public enum WaveState :byte
         {
@@ -56,7 +48,7 @@ namespace JetPirate
 
         public EnemyManager(ContentManager content, Camera camera)
         {
-            texture = content.Load<Texture2D>("Sprites/"); // fill with enemy spritesheet
+            texture = content.Load<Texture2D>("Sprites/"); 
 
             enemies = new List<Enemy>();
 
@@ -111,6 +103,8 @@ namespace JetPirate
         {
             return rightBorder;
         }
+
+
 
 
     }
