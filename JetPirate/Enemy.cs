@@ -14,7 +14,7 @@ namespace JetPirate
         //Enemy management
         private bool isActive;
         private EnemyManager EnemyManager;
-        public EnemyManager.WaveType waveType;
+        private ContentManager content;
 
         //physic
         private PhysicModule physicModuleOne;
@@ -36,16 +36,22 @@ namespace JetPirate
 
 
 
-        public Enemy(Vector2 pos, float rot, EnemyManager enemyManager) : base (pos, rot) 
+        public Enemy(Vector2 pos, float rot, EnemyManager enemyManager, ContentManager content) : base (pos, rot) 
         {
             EnemyManager = enemyManager;
             isActive = false;
+            this.content = content;
 
             //Not too smart desicion, could be a list but I have to do as fast as possible at this moment
             physicModuleOne = new PhysicModule(this, new Vector2(65,0), new Vector2(65,40));
             physicModuleOne.isPhysicActive = false;
             physicModuleTwo = new PhysicModule(this, new Vector2(-65, 0), new Vector2(65, 40));
             physicModuleTwo.isPhysicActive = false;
+
+            engineParticles = new ParticleSystem(position, Rotation, content.Load<Texture2D>("fire_left"), 2f, 15f, 0.2f, 0.5f);
+            explosionParticles = new ParticleSystem(position, Rotation, content.Load<Texture2D>("Particles/ExploudParticle"), 1f, 25f, 0f, (float)Math.PI);
+
+
 
 
             //Visual
@@ -106,13 +112,14 @@ namespace JetPirate
         //        this.Destroyed();       
         //}
 
-        public void ResetMe(float speed, Vector2 shipPos, Vector2 startPos )
+        public void ResetMe(float speed, Vector2 shipPos, Vector2 startPos , Texture2D texture)
         {            
             this.speed = speed;
             pivotPoint = shipPos;
             position = startPos;
             velocity = new Vector2(position.X - pivotPoint.X, position.Y - pivotPoint.Y);
             velocity.Normalize();
+            this.texture = texture;
             texture = EnemyManager.GetTexture();
             isActive = true;
             physicModuleOne.isPhysicActive = true;
@@ -139,6 +146,7 @@ namespace JetPirate
             isActive = false;
             physicModuleOne.isPhysicActive = false;
             physicModuleTwo.isPhysicActive = false;
+            EnemyManager.enemyCounter++;
 
             //explosion visual
             explosionTimer = explosionTime;
@@ -152,6 +160,11 @@ namespace JetPirate
                 jet.TakeDamage();
                 Destroyed();                
             }
+        }
+
+        public bool GetEnemyState()
+        {
+            return isActive;
         }
 
 

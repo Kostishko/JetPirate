@@ -1,15 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace JetPirate
 {
     internal class EnemyManager
     {
-        
-        
 
+
+        //jet
+        private JetShip jet;
 
         //Enemies
         private List<Enemy> enemies;
@@ -25,14 +27,19 @@ namespace JetPirate
 
 
         //Waves        
-        private int freeEnemiesCounter; // destroyed or flyed away enemies (free for the next wave) 
         private int waveCounter; // how many waves are bitten
         private int waveEnemyCounter; // how many enemies in the next wave
         private float timeBetweenWave; // time between the next wave
         private float timerBetweenWave; // current time to next wave
         private float timeBetweenEnemies;// time between enemies due the wave
         private float timerBetweenEnemies; // current timer between enemies in the wave
-        private float enemiesSpeed; //speed on the current wave       
+        private float enemiesSpeed; //speed on the current wave
+        private int startPosShiftX;
+        private int startPosShiftY;
+        private Vector2 startPos;
+        public int enemyCounter;
+
+        private Random rng;
 
         public enum WaveState :byte
         {
@@ -42,24 +49,24 @@ namespace JetPirate
         }
         public WaveState currentState;
 
-
-
-
-
-        public EnemyManager(ContentManager content, Camera camera)
+        public EnemyManager(ContentManager content, Camera camera, JetShip jet)
         {
-            texture = content.Load<Texture2D>("Sprites/"); 
+            texture = content.Load<Texture2D>("Sprites/Rocket_02");
+            this.jet = jet;
 
             enemies = new List<Enemy>();
 
 
             //enemies creating 
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 20; i++)
             {
-                enemies.Add(new Enemy(Vector2.Zero, 0f, this));
+                enemies.Add(new Enemy(Vector2.Zero, 0f, this, content));
             }
 
             this.camera = camera;
+            rng = new Random();
+
+            ResetMe();
         }
 
 
@@ -73,6 +80,7 @@ namespace JetPirate
                 case WaveState.spawn:
                     break;
                 case WaveState.between:
+                    BetweenStateUpdate();
                     break;
 
             }
@@ -85,6 +93,85 @@ namespace JetPirate
 
         }
 
+        public void DrawMe(SpriteBatch sp)
+        {
+            for (int i = 0; i < enemies.Count;i++)
+            {
+                enemies[i].DrawMe(sp);
+            }
+        }
+
+
+        public void BetweenStateUpdate()
+        {
+            if (timeBetweenWave>0)
+            {
+                timeBetweenWave -= 0.1f;
+            }
+            else
+            {
+                if (FreeEnemyCheck() >= 10)
+                {
+                    startPosShiftY =  rng.Next(0, 720);                    
+
+                    startPosShiftX = rng.Next(0, 2) == 0? -1: 1;
+
+                    enemiesSpeed = Math.Clamp(waveCounter * 1.6f, 6f, 10f);
+                    currentState = WaveState.spawn;
+                }
+                
+            }
+        }
+
+        public void SpawnStateUpdate()
+        {
+            startPos = new Vector2(camera.position.X+startPosShiftX * 700, camera.position.Y+startPosShiftY);
+            if (waveEnemyCounter<10)
+            {
+                if (timeBetweenEnemies <= 0)
+                {
+                    GetFreeEnemy().ResetMe(enemiesSpeed, jet.GetPosition(), startPos, texture);
+                    waveEnemyCounter++;
+                    timeBetweenEnemies = timerBetweenEnemies;
+                }
+                else
+                {
+                    timeBetweenEnemies -= 0.1f;
+                }
+            }
+            else
+            {
+                timeBetweenWave = timerBetweenWave;
+                waveEnemyCounter = 0;
+                currentState = WaveState.between;
+            }
+
+        }
+
+        public int FreeEnemyCheck()
+        {
+            int count=0; 
+            for (int i = 0;i<enemies.Count;i++)
+            {
+                if (!enemies[i].GetEnemyState())
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        public Enemy GetFreeEnemy()
+        {
+            for (int i = 0; i<enemies.Count;i++)
+            {
+                if (!enemies[i].GetEnemyState())
+                {
+                    return enemies[i];
+                }
+            }
+            return null;
+        }
 
         //sending the texture sheet to enemies
         public Texture2D GetTexture()
@@ -103,6 +190,19 @@ namespace JetPirate
         {
             return rightBorder;
         }
+
+        public void ResetMe()
+        {
+            waveCounter = 0;
+            waveEnemyCounter = 0;
+            timeBetweenWave = 0;
+            timerBetweenWave = 15f;
+            timeBetweenEnemies = 0;
+            timerBetweenEnemies = 4f;
+            enemiesSpeed=0;         
+            enemyCounter=0;
+            currentState = WaveState.between;
+    }
 
 
 

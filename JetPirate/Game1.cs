@@ -29,8 +29,8 @@ namespace JetPirate
         private GamePadState  currState;
         private GamePadState prevState;
 
-        //Tested enemy
-        private Enemy enemy;
+        //Enemy
+        private EnemyManager enemyManager;
 
 
         
@@ -69,8 +69,8 @@ namespace JetPirate
             //tested particles
             //_particleSystem = new ParticleSystem(new Vector2(200, 200), -MathHelper.Pi, Content.Load<Texture2D>("fire"), 2f,10f,1f);
 
-            //Tested enemy
-            //enemy = new Enemy(Vector2.Zero, 0f, Content.Load<Texture2D>("Enemy"));
+            //Enemy
+            enemyManager = new EnemyManager(Content, cam, jetShip);
 
             //UI
             uiManager = new UIManager(cam, jetShip, Content);
@@ -102,6 +102,7 @@ namespace JetPirate
             background.UpdateMe();
             water.UpdateMe();
             uiManager.UpdateMe();
+            enemyManager.UpdateMe();
 
             prevState = currState;
 
@@ -117,6 +118,9 @@ namespace JetPirate
             //Background
             background.DrawMe(_spriteBatch);
             water.DrawMe(_spriteBatch);
+
+            //Enemies
+            enemyManager.DrawMe(_spriteBatch);
 
             //  _particleSystem.DrawMe(_spriteBatch);
             jetShip.DrawMe(_spriteBatch);
