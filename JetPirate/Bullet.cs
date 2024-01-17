@@ -43,7 +43,7 @@ namespace JetPirate
 
 
             // physicRec = new Rectangle((int)Math.Round(pos.X), (int)Math.Round(pos.Y), (int)Math.Round(tex.Width / 2f), (int)Math.Round(tex.Height / 2f));
-            physicBody = new PhysicModule(this, Vector2.Zero, new Vector2(tex.Width / 2, tex.Height / 2));
+            physicBody = new PhysicModule(this, Vector2.Zero, new Vector2(tex.Width / 2+5, tex.Height / 2+5));
             physicBody.isPhysicActive = false;
 
             //visual

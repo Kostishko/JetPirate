@@ -73,7 +73,7 @@ namespace JetPirate
             enemyManager = new EnemyManager(Content, cam, jetShip);
 
             //UI
-            uiManager = new UIManager(cam, jetShip, Content);
+            uiManager = new UIManager(cam, jetShip, Content, enemyManager);
 
             //Background
             background = new Background(Vector2.Zero, 0f, Content, jetShip);

@@ -78,6 +78,7 @@ namespace JetPirate
                 case WaveState.pause:
                     break;
                 case WaveState.spawn:
+                    SpawnStateUpdate();
                     break;
                 case WaveState.between:
                     BetweenStateUpdate();
@@ -85,9 +86,14 @@ namespace JetPirate
 
             }
 
+            for(int i = 0;i < enemies.Count;i++)
+            {
+                enemies[i].UpdateMe();
+            }
+
             //Borders for enemies
-            leftBorder = new Vector2(camera.position.X - 640, camera.position.Y - 440);
-            rightBorder = new Vector2(camera.position.X + 1860, camera.position.Y + 1160);
+            leftBorder = new Vector2(jet.GetPosition().X - 1280, jet.GetPosition().Y - 880);
+            rightBorder = new Vector2(jet.GetPosition().X + 1280, jet.GetPosition().Y + 880);
 
 
 
@@ -104,15 +110,15 @@ namespace JetPirate
 
         public void BetweenStateUpdate()
         {
-            if (timeBetweenWave>0)
+            if (timerBetweenWave>0)
             {
-                timeBetweenWave -= 0.1f;
+                timerBetweenWave -= 0.1f;
             }
             else
             {
                 if (FreeEnemyCheck() >= 10)
                 {
-                    startPosShiftY =  rng.Next(0, 720);                    
+                    startPosShiftY =  rng.Next(0, 440);                    
 
                     startPosShiftX = rng.Next(0, 2) == 0? -1: 1;
 
@@ -125,23 +131,23 @@ namespace JetPirate
 
         public void SpawnStateUpdate()
         {
-            startPos = new Vector2(camera.position.X+startPosShiftX * 700, camera.position.Y+startPosShiftY);
+            startPos = new Vector2(jet.GetPosition().X+(startPosShiftX * 700), jet.GetPosition().Y+(startPosShiftY*startPosShiftX));
             if (waveEnemyCounter<10)
             {
-                if (timeBetweenEnemies <= 0)
+                if (timerBetweenEnemies >= 0)
                 {
-                    GetFreeEnemy().ResetMe(enemiesSpeed, jet.GetPosition(), startPos, texture);
-                    waveEnemyCounter++;
-                    timeBetweenEnemies = timerBetweenEnemies;
+                    timerBetweenEnemies -= 0.1f;
                 }
                 else
                 {
-                    timeBetweenEnemies -= 0.1f;
+                    GetFreeEnemy().ResetMe(enemiesSpeed, jet.GetPosition(), startPos, texture);
+                    waveEnemyCounter++;
+                    timerBetweenEnemies = timeBetweenEnemies;
                 }
             }
             else
             {
-                timeBetweenWave = timerBetweenWave;
+                timerBetweenWave = timeBetweenWave;
                 waveEnemyCounter = 0;
                 currentState = WaveState.between;
             }
@@ -195,9 +201,9 @@ namespace JetPirate
         {
             waveCounter = 0;
             waveEnemyCounter = 0;
-            timeBetweenWave = 0;
+            timeBetweenWave = 15f;
             timerBetweenWave = 15f;
-            timeBetweenEnemies = 0;
+            timeBetweenEnemies = 4f;
             timerBetweenEnemies = 4f;
             enemiesSpeed=0;         
             enemyCounter=0;

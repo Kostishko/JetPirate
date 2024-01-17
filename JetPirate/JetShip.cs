@@ -372,16 +372,18 @@ namespace JetPirate
         /// </summary>
         public void TakeDamage()
         {
-
-            health--;
-            camera.StartShaking(10);
-            //explosions particles
-            explosionTimer = explosionTime;
-            invulTimer = invulTime;
-            //death treatment
-            if (health == 0)
+            if (invulTimer <= 0)
             {
-                isAlive = false;
+                health--;
+                camera.StartShaking(10);
+                //explosions particles
+                explosionTimer = explosionTime;
+                invulTimer = invulTime;
+                //death treatment
+                if (health == 0)
+                {
+                    isAlive = false;
+                }
             }
         }
 

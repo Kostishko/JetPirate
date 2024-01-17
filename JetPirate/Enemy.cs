@@ -43,9 +43,9 @@ namespace JetPirate
             this.content = content;
 
             //Not too smart desicion, could be a list but I have to do as fast as possible at this moment
-            physicModuleOne = new PhysicModule(this, new Vector2(65,0), new Vector2(65,40));
+            physicModuleOne = new PhysicModule(this, new Vector2(25,15), new Vector2(20,20));
             physicModuleOne.isPhysicActive = false;
-            physicModuleTwo = new PhysicModule(this, new Vector2(-65, 0), new Vector2(65, 40));
+            physicModuleTwo = new PhysicModule(this, new Vector2(50, 15), new Vector2(20, 20));
             physicModuleTwo.isPhysicActive = false;
 
             engineParticles = new ParticleSystem(position, Rotation, content.Load<Texture2D>("fire_left"), 2f, 15f, 0.2f, 0.5f);
@@ -86,8 +86,10 @@ namespace JetPirate
         {
             if (isActive) //drawning only if the enemy is active
             {
-                sp.Draw(texture, position, null, Color.White, Rotation, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-                engineParticles.DrawMe(sp);               
+                sp.Draw(texture, position, null, Color.White, Rotation, Vector2.Zero, 0.5f, SpriteEffects.None, 0f);
+                engineParticles.DrawMe(sp);
+                DebugManager.DebugRectangle(physicModuleOne.GetRectangle());
+                DebugManager.DebugRectangle(physicModuleTwo.GetRectangle());
                 //add engine particles here
             }
             if (!isActive)
@@ -117,7 +119,8 @@ namespace JetPirate
             this.speed = speed;
             pivotPoint = shipPos;
             position = startPos;
-            velocity = new Vector2(position.X - pivotPoint.X, position.Y - pivotPoint.Y);
+            velocity = new Vector2(pivotPoint.X- position.X , pivotPoint.Y-position.Y );
+            Rotation = (float)Math.Atan2(velocity.Y, velocity.X)- (float)Math.PI;
             velocity.Normalize();
             this.texture = texture;
             texture = EnemyManager.GetTexture();

@@ -18,6 +18,7 @@ namespace JetPirate
         //UI pictures
         private Texture2D shipHealthPic;
         private Texture2D bulletCounterPic;
+        private Texture2D enemyPic;
 
         // to ancor ui elements
         private Camera cam;
@@ -27,22 +28,27 @@ namespace JetPirate
         private JetShip shipUI;
         private Gun gunUI;
 
+        //Enemy manager
+        private EnemyManager enemyManager;
+
         
 
 
-        public UIManager(Camera cam, JetShip jetShip, ContentManager content) 
+        public UIManager(Camera cam, JetShip jetShip, ContentManager content, EnemyManager enemyManager) 
         {
             contentUI= content;
             fontUI = contentUI.Load<SpriteFont>("Fonts/MajorFont");
             this.cam = cam;
             shipUI = jetShip;
             gunUI = shipUI.GetGun();
-            
+            this.enemyManager = enemyManager;
+
 
 
             //UI pics
             shipHealthPic = contentUI.Load<Texture2D>("Sprites/Ship_03");
             bulletCounterPic = contentUI.Load<Texture2D>("Sprites/Bullet");
+            enemyPic = contentUI.Load<Texture2D>("Sprites/Rocket");
         }
 
 
@@ -78,6 +84,9 @@ namespace JetPirate
             {
                 sp.DrawString(fontUI, "RELOAD", ancorUI + new Vector2(25, 145), Color.Red, 0.5f, Vector2.Zero, 0.5f, SpriteEffects.None,0f);
             }
+
+            sp.Draw(enemyPic, ancorUI + new Vector2(1100, 50), null, Color.White, (float)Math.PI/2 , Vector2.Zero, 0.7f, SpriteEffects.None, 0f);
+            sp.DrawString(fontUI, " X " + enemyManager.enemyCounter, ancorUI + new Vector2(1100, 60), Color.White);
 
         }
 
