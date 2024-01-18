@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace JetPirate
 {
@@ -31,7 +32,12 @@ namespace JetPirate
         //Enemy manager
         private EnemyManager enemyManager;
 
-        
+        //Main menu buttons' list
+        public List<Button> MainMenuButtons;
+        public int currentButton;
+
+
+
 
 
         public UIManager(Camera cam, JetShip jetShip, ContentManager content, EnemyManager enemyManager) 
@@ -49,6 +55,10 @@ namespace JetPirate
             shipHealthPic = contentUI.Load<Texture2D>("Sprites/Ship_03");
             bulletCounterPic = contentUI.Load<Texture2D>("Sprites/Bullet");
             enemyPic = contentUI.Load<Texture2D>("Sprites/Rocket");
+
+            //Main menu filling
+            MainMenuButtons = new List<Button>();
+            
         }
 
 
@@ -59,12 +69,34 @@ namespace JetPirate
         }
 
 
-        public void DrawMe(SpriteBatch sp)
+        public void DrawMe(SpriteBatch sp, Game1.GameState gameState)
         {
-            //health points drawning
+            switch (gameState)
+            {
+                case Game1.GameState.pause: 
+                    break;
+                case Game1.GameState.game:
+                    UIGameStateDraw(sp);
+                    break;
+                case Game1.GameState.menu:
+                    break;
+                case Game1.GameState.loose:
+                    break;
+                case Game1.GameState.win:
+                    break;
+            }
+
+            
+
+        }
+
+
+        #region UI in game state
+        private void UIGameStateDraw(SpriteBatch sp)
+        {
+            //health points draw
             sp.Draw(shipHealthPic, ancorUI + new Vector2(25, 50), null, Color.White, 0f, Vector2.Zero, 0.7f, SpriteEffects.None, 0f);
             sp.DrawString(fontUI, " X " + shipUI.GetHealth(), ancorUI + new Vector2(100, 45), Color.White);
-
 
             // draw all magazine capacity
             for (int i = 0; i < gunUI.GetMagCapacity(); i++)
@@ -80,15 +112,16 @@ namespace JetPirate
             }
 
             //reload indicator
-            if(gunUI.GetReloadTimer()>0&& gunUI.GetReloadTimer()!=gunUI.GetReloadTime())
+            if (gunUI.GetReloadTimer() > 0 && gunUI.GetReloadTimer() != gunUI.GetReloadTime())
             {
-                sp.DrawString(fontUI, "RELOAD", ancorUI + new Vector2(25, 145), Color.Red, 0.5f, Vector2.Zero, 0.5f, SpriteEffects.None,0f);
+                sp.DrawString(fontUI, "RELOAD", ancorUI + new Vector2(25, 145), Color.Red, 0.5f, Vector2.Zero, 0.5f, SpriteEffects.None, 0f);
             }
 
-            sp.Draw(enemyPic, ancorUI + new Vector2(1100, 50), null, Color.White, (float)Math.PI/2 , Vector2.Zero, 0.7f, SpriteEffects.None, 0f);
+            sp.Draw(enemyPic, ancorUI + new Vector2(1100, 50), null, Color.White, (float)Math.PI / 2, Vector2.Zero, 0.7f, SpriteEffects.None, 0f);
             sp.DrawString(fontUI, " X " + enemyManager.enemyCounter, ancorUI + new Vector2(1100, 60), Color.White);
-
         }
+        #endregion
+
 
 
 

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.DirectWrite;
 using System;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
@@ -11,6 +12,19 @@ namespace JetPirate
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        //Game statement
+        public enum GameState
+        {
+            pause,
+            game,
+            win,
+            loose,
+            menu
+        }
+        public GameState currentGameState;
+
+
 
         //Ship - player
         private JetShip jetShip;
@@ -43,6 +57,7 @@ namespace JetPirate
 
             _graphics.PreferredBackBufferHeight = 720;
             _graphics.PreferredBackBufferWidth = 1280;
+            currentGameState = GameState.menu;
         }
 
         protected override void Initialize()
@@ -89,10 +104,78 @@ namespace JetPirate
 
         protected override void Update(GameTime gameTime)
         {
-            //physic
-            PhysicManager.UpdateMe();
+
 
             currState = GamePad.GetState(PlayerIndex.One);
+            switch (currentGameState)
+            {
+                case GameState.game:
+                    GameUpdate(gameTime);
+                    break;
+                case GameState.pause:
+                    break;
+                case GameState.loose:
+                    break;
+                case GameState.menu:
+                    break;
+                case GameState.win:
+                    break;
+            }
+
+            //physic
+
+            
+            prevState = currState;
+
+            base.Update(gameTime);
+        }
+
+       
+
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, cam.GetCam());
+            //Background - draw it in any state
+            background.DrawMe(_spriteBatch);
+
+            switch (currentGameState)
+            {
+                case GameState.game:
+                    GameDraw();
+                    break;
+                case GameState.pause:
+                    break;
+                case GameState.loose:
+                    break;
+                case GameState.menu:
+                    break;
+                case GameState.win:
+                    break;
+            }
+
+            
+
+            // DebugManager.DebugString("cam pos:" + cam.position, new Vector2(jetShip.GetPosition().X, jetShip.GetPosition().Y));
+
+            //UI draw - send there the current state
+            uiManager.DrawMe(_spriteBatch, currentGameState);
+
+            _spriteBatch.End();
+            // TODO: Add your drawing code here
+
+            base.Draw(gameTime);
+        }
+
+      
+
+        #region Game
+
+        private void GameUpdate(GameTime gameTime)
+        {
+            PhysicManager.UpdateMe();
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -103,20 +186,11 @@ namespace JetPirate
             water.UpdateMe();
             uiManager.UpdateMe();
             enemyManager.UpdateMe();
-
-            prevState = currState;
-
-            base.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime)
+        private void GameDraw()
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, cam.GetCam());
-
-            //Background
-            background.DrawMe(_spriteBatch);
+            //water - bottom border
             water.DrawMe(_spriteBatch);
 
             //Enemies
@@ -124,21 +198,8 @@ namespace JetPirate
 
             //  _particleSystem.DrawMe(_spriteBatch);
             jetShip.DrawMe(_spriteBatch);
-
-            DebugManager.DebugString("cam pos:" + cam.position, new Vector2(jetShip.GetPosition().X, jetShip.GetPosition().Y));
-
-            //tested enemy
-            //enemy.DrawMe(_spriteBatch);
-
-
-
-            //UI drawning
-            uiManager.DrawMe(_spriteBatch);
-
-            _spriteBatch.End();
-            // TODO: Add your drawing code here
-
-            base.Draw(gameTime);
         }
+
+        #endregion
     }
 }
