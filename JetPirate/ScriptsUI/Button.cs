@@ -18,12 +18,14 @@ namespace JetPirate
         private String name;
         private SpriteFont uiFont;
 
-        public Button(Vector2 position, String name, SpriteFont font)
+        private UIManager uiManager;
+
+        public Button(Vector2 position, String name, SpriteFont font, UIManager uiManager)
         {
             this.position = position;
             this.name = name;
             this.uiFont = font;
-
+            this.uiManager = uiManager;
         }
 
         public void UpdateMe(UIButtonState state)

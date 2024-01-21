@@ -13,7 +13,7 @@ namespace JetPirate.ScriptsUI
     internal class ButtonNewGame : Button
     {
 
-        public ButtonNewGame(Vector2 position, String name, SpriteFont font) : base(position, name, font) { }
+        public ButtonNewGame(Vector2 position, String name, SpriteFont font, UIManager uiManager) : base(position, name, font, uiManager) { }
 
 
         public override void CliclMe()
