@@ -31,6 +31,11 @@ namespace JetPirate
             this.state = state;
         }
 
+        public virtual void CliclMe()
+        {
+
+        }
+
         public void DrawMe(SpriteBatch sp)
         {
             switch (state)
