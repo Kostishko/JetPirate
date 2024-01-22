@@ -5,7 +5,7 @@ using System;
 
 namespace JetPirate
 {
-    internal class Camera
+    public class Camera
     {
         //public due debug
         public Vector2 position;

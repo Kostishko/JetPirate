@@ -30,9 +30,18 @@ namespace JetPirate
         private Gun gunUI;
 
         //Enemy manager
-        private EnemyManager enemyManager;
+        private Game1 gameMajor;
 
-        //Main menu buttons' list
+        //Menu 
+        public enum MenuPanel
+        {
+            MainMenu,
+            Options, 
+            Lose,
+            Win,
+            Game
+        }
+        public MenuPanel menuPanel;
         public List<Button> MainMenuButtons;
         public int currentButton;
 
@@ -40,14 +49,15 @@ namespace JetPirate
 
 
 
-        public UIManager(Camera cam, JetShip jetShip, ContentManager content, EnemyManager enemyManager) 
+
+        public UIManager(Camera cam, JetShip jetShip, ContentManager content, Game1 gameMajor) 
         {
             contentUI= content;
             fontUI = contentUI.Load<SpriteFont>("Fonts/MajorFont");
             this.cam = cam;
             shipUI = jetShip;
             gunUI = shipUI.GetGun();
-            this.enemyManager = enemyManager;
+            this.gameMajor = gameMajor;
 
 
 
@@ -62,16 +72,26 @@ namespace JetPirate
         }
 
 
-        public void UpdateMe()
+        public void UpdateMe(GamePadState oldPadState, GamePadState curPadState)
         {
             //update an ancor
             ancorUI = -cam.position;
+
+            switch (gameMajor.currentGameState)
+            {
+                case Game1.GameState.pause:
+                    break;
+                case Game1.GameState.game:
+                    break;
+                case Game1.GameState.menu:
+                    break;
+            }
+
         }
 
-
-        public void DrawMe(SpriteBatch sp, Game1.GameState gameState)
+        public void DrawMe(SpriteBatch sp)
         {
-            switch (gameState)
+            switch (gameMajor.currentGameState)
             {
                 case Game1.GameState.pause: 
                     break;
@@ -79,11 +99,8 @@ namespace JetPirate
                     UIGameStateDraw(sp);
                     break;
                 case Game1.GameState.menu:
-                    break;
-                case Game1.GameState.loose:
-                    break;
-                case Game1.GameState.win:
-                    break;
+                    break;          
+                
             }
 
             
@@ -118,12 +135,46 @@ namespace JetPirate
             }
 
             sp.Draw(enemyPic, ancorUI + new Vector2(1100, 50), null, Color.White, (float)Math.PI / 2, Vector2.Zero, 0.7f, SpriteEffects.None, 0f);
-            sp.DrawString(fontUI, " X " + enemyManager.enemyCounter, ancorUI + new Vector2(1100, 60), Color.White);
+            sp.DrawString(fontUI, " X " + gameMajor.enemyManager.enemyCounter, ancorUI + new Vector2(1100, 60), Color.White);
         }
         #endregion
 
 
 
+        #region Menu
+
+        public void UIMenuStateUpdate(GamePadState oldPadState, GamePadState curPadState)
+        {
+
+            switch (menuPanel)
+            {
+                case MenuPanel.MainMenu:
+                    break;
+                case MenuPanel.Options:
+                    break;
+                case MenuPanel.Lose:
+                    break;
+                case MenuPanel.Win:
+                    break;
+            }
+
+
+
+        }
+
+        public void UIMenuStateDraw()
+        {
+
+        }
+
+
+        #region Panels
+        
+
+
+        #endregion
+
+        #endregion
 
 
 

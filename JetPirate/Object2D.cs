@@ -5,7 +5,7 @@ using System;
 
 namespace JetPirate
 {
-    abstract class Object2D 
+    abstract public class Object2D 
     {
         protected Vector2 position;
 

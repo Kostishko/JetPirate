@@ -10,7 +10,7 @@ namespace JetPirate
 {
 
 
-    internal class Gun : Object2D
+    public class Gun : Object2D
     {
         //Graphic
         private Texture2D texture;

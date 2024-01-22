@@ -10,7 +10,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace JetPirate
 {
-    internal class JetShip : Object2D
+    public class JetShip : Object2D
     {
 
         //Visual

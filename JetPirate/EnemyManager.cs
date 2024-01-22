@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace JetPirate
 {
-    internal class EnemyManager
+    public class EnemyManager
     {
 
 
@@ -49,7 +49,7 @@ namespace JetPirate
         }
         public WaveState currentState;
 
-        public EnemyManager(ContentManager content, Camera camera, JetShip jet)
+        public EnemyManager(ContentManager content, Camera camera, JetShip jet) // made a mistake - I'd should put here Game1 and not cam\jet separately 
         {
             texture = content.Load<Texture2D>("Sprites/Rocket_02");
             this.jet = jet;

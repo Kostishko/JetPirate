@@ -8,7 +8,7 @@ using System;
 
 namespace JetPirate
 {
-    internal class Enemy : Object2D
+    public class Enemy : Object2D
     {
 
         //Enemy management

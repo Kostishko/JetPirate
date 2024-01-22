@@ -17,9 +17,7 @@ namespace JetPirate
         public enum GameState
         {
             pause,
-            game,
-            win,
-            loose,
+            game,            
             menu
         }
         public GameState currentGameState;
@@ -44,7 +42,7 @@ namespace JetPirate
         private GamePadState prevState;
 
         //Enemy
-        private EnemyManager enemyManager;
+        public EnemyManager enemyManager;
 
 
         
@@ -88,7 +86,7 @@ namespace JetPirate
             enemyManager = new EnemyManager(Content, cam, jetShip);
 
             //UI
-            uiManager = new UIManager(cam, jetShip, Content, enemyManager);
+            uiManager = new UIManager(cam, jetShip, Content, this);
 
             //Background
             background = new Background(Vector2.Zero, 0f, Content, jetShip);
@@ -113,13 +111,9 @@ namespace JetPirate
                     GameUpdate(gameTime);
                     break;
                 case GameState.pause:
-                    break;
-                case GameState.loose:
-                    break;
+                    break;                
                 case GameState.menu:
-                    break;
-                case GameState.win:
-                    break;
+                    break;                
             }
 
             //physic
@@ -146,13 +140,9 @@ namespace JetPirate
                     GameDraw();
                     break;
                 case GameState.pause:
-                    break;
-                case GameState.loose:
-                    break;
+                    break;                
                 case GameState.menu:
-                    break;
-                case GameState.win:
-                    break;
+                    break;                
             }
 
             
@@ -160,7 +150,7 @@ namespace JetPirate
             // DebugManager.DebugString("cam pos:" + cam.position, new Vector2(jetShip.GetPosition().X, jetShip.GetPosition().Y));
 
             //UI draw - send there the current state
-            uiManager.DrawMe(_spriteBatch, currentGameState);
+            uiManager.DrawMe(_spriteBatch);
 
             _spriteBatch.End();
             // TODO: Add your drawing code here
@@ -201,5 +191,34 @@ namespace JetPirate
         }
 
         #endregion
+
+        #region Menu
+
+        //buttons functions
+        public void NewGameStart()
+        {
+            jetShip.Restore();
+            enemyManager.ResetMe();
+            currentGameState = GameState.game;
+
+        }
+
+
+
+
+        #endregion
+
+        #region Pause
+
+        #endregion
+
+        #region Win
+
+        #endregion
+
+        #region Lose
+
+        #endregion
+
     }
 }
