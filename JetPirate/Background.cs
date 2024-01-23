@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace JetPirate
 {
+    /// <summary>
+    /// Background that draw behind the scene and junp after the jet movement
+    /// </summary>
     internal class Background : Object2D
     {
 

@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 namespace JetPirate
 {
+    /// <summary>
+    /// Manager that controls enemy waves
+    /// </summary>
     public class EnemyManager
     {
 

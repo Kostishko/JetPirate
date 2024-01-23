@@ -7,6 +7,9 @@ using System;
 
 namespace JetPirate
 {
+    /// <summary>
+    ///  this is a gun that attached to ship
+    /// </summary>
     internal class ShipGun : Module
     {
 

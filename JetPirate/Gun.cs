@@ -9,7 +9,9 @@ using System.Collections.Generic;
 namespace JetPirate
 {
 
-
+    /// <summary>
+    /// Gun is a gun
+    /// </summary>
     public class Gun : Object2D
     {
         //Graphic

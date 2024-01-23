@@ -10,6 +10,9 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace JetPirate
 {
+    /// <summary>
+    /// Jet ship is a player controlled object - main character of the game
+    /// </summary>
     public class JetShip : Object2D
     {
 

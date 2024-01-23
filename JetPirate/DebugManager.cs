@@ -6,6 +6,9 @@ using System;
 
 namespace JetPirate
 {
+    /// <summary>
+    /// Debug manager to simplify draw essential data due developing
+    /// </summary>
     static class DebugManager
     {
 

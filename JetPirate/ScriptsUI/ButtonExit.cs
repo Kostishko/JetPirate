@@ -17,8 +17,8 @@ namespace JetPirate.ScriptsUI
         }
 
         public override void CliclMe()
-        {
-
+        {          
+                uiManager.gameMajor.Exit();
         }
     }
 }

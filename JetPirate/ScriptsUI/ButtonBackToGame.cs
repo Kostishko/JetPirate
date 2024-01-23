@@ -16,7 +16,8 @@ namespace JetPirate.ScriptsUI
 
         public override void CliclMe()
         {
-            
+            uiManager.gameMajor.currentGameState = Game1.GameState.game;
+            uiManager.menuPanel = UIManager.MenuPanel.Game;
         }
 
     }

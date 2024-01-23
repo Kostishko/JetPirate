@@ -5,6 +5,9 @@ using System;
 
 namespace JetPirate
 {
+    /// <summary>
+    /// Camera of the game
+    /// </summary>
     public class Camera
     {
         //public due debug

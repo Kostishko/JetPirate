@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace JetPirate
 {
+    /// <summary>
+    /// this is a manager of all collision modules. It sent data about collided objects to collided modules
+    /// </summary>
     static class PhysicManager
     {
         static private List<PhysicModule> physicObjects;

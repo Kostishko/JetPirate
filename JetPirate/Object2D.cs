@@ -5,16 +5,20 @@ using System;
 
 namespace JetPirate
 {
+    /// <summary>
+    /// This is a base for any other game object in a game
+    /// </summary>
     abstract public class Object2D 
     {
         protected Vector2 position;
 
-        private float rotation;
-
-//        protected Rectangle physicRec;
 
         public bool isPhysicActive;
-        
+
+        /// <summary>
+        /// rotation clamped in 2 PI and reverse the value back to start of rotating if the value overcome the 2 PI bounds
+        /// </summary>
+        private float rotation;
         protected float Rotation
         {
             get => rotation;

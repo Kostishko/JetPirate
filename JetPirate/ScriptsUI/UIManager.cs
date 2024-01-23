@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
 
@@ -33,19 +34,19 @@ namespace JetPirate
         //Enemy manager
         public Game1 gameMajor;
 
-        //Menus
+        //Menu's panels
         public enum MenuPanel
         {
             MainMenu,
             Pause,
             Control,
-            Options, 
+            Options,
             Lose,
             Win,
             Game
         }
         public MenuPanel menuPanel;
-        
+
         //main panel
         private List<Button> mainMenuButtons;
         private int currentButton;
@@ -67,10 +68,13 @@ namespace JetPirate
         private Texture2D pausePanel;
         private List<Button> pauseButtons;
 
+        //back to main menu button
+        private ButtonMainMenu backButton;
 
-        public UIManager(Camera cam, JetShip jetShip, ContentManager content, Game1 gameMajor) 
+
+        public UIManager(Camera cam, JetShip jetShip, ContentManager content, Game1 gameMajor)
         {
-            contentUI= content;
+            contentUI = content;
             fontUI = contentUI.Load<SpriteFont>("Fonts/MajorFont");
             this.cam = cam;
             shipUI = jetShip;
@@ -87,9 +91,9 @@ namespace JetPirate
             //backgrounds pics
             mainMenuBackground = contentUI.Load<Texture2D>("Sprites/");
             optionBackground = contentUI.Load<Texture2D>("Sprites/");
-            pausePanel= contentUI.Load<Texture2D>("Sprites/");
+            pausePanel = contentUI.Load<Texture2D>("Sprites/");
             controlBackground = contentUI.Load<Texture2D>("Sprites/");
-            loseBackground= contentUI.Load<Texture2D>("Sprites/");
+            loseBackground = contentUI.Load<Texture2D>("Sprites/");
             winBackground = contentUI.Load<Texture2D>("Sprites/");
 
             //Main menu button - that's also looks like a terrible dessicion, but I don't have time to do smth smart, so it's just from the top of my head?
@@ -109,8 +113,11 @@ namespace JetPirate
             pauseButtons[0] = (ButtonBackToGame)pauseButtons[0];
             pauseButtons[1] = new Button(new Vector2(600, 470), "Main Menu", fontUI, this);
             pauseButtons[1] = (ButtonMainMenu)pauseButtons[1];
-            pauseButtons[2] = new Button(new Vector2(600,490), "Exit", fontUI,this);
+            pauseButtons[2] = new Button(new Vector2(600, 490), "Exit", fontUI, this);
             pauseButtons[2] = (ButtonExit)pauseButtons[2];
+
+            //back to main menu button
+            backButton = new ButtonMainMenu(new Vector2(600, 450), "Back to main Menu", fontUI, this);
 
         }
 
@@ -126,39 +133,51 @@ namespace JetPirate
                     MainMenuUpdate(oldPadState, curPadState);
                     break;
                 case MenuPanel.Options:
+                    OptionUpdate(oldPadState, curPadState);
                     break;
                 case MenuPanel.Lose:
+                    LoseUpdate(oldPadState, curPadState);
                     break;
-                case MenuPanel.Game:
+                case MenuPanel.Game: // all updates of Game layout are in Draw method
                     break;
-                case MenuPanel.Win: 
+                case MenuPanel.Win:
+                    WinUpdate(oldPadState, curPadState);
                     break;
-                case MenuPanel.Pause: 
+                case MenuPanel.Pause:
+                    PauseUpdate(oldPadState, curPadState);
                     break;
-                case MenuPanel.Control: 
+                case MenuPanel.Control:
+                    ControlUpdate(oldPadState, curPadState);
                     break;
             }
 
         }
 
-       
+
         public void DrawMe(SpriteBatch sp)
         {
             switch (menuPanel)
             {
                 case MenuPanel.MainMenu:
+                    MainMenuDraw(sp);
                     break;
                 case MenuPanel.Options:
+                    OptionDraw(sp);
                     break;
                 case MenuPanel.Lose:
+                    LoseDraw(sp);
                     break;
                 case MenuPanel.Game:
+                    UIGameStateDraw(sp);
                     break;
                 case MenuPanel.Win:
+                    WinDraw(sp);
                     break;
                 case MenuPanel.Pause:
+                    PauseDraw(sp);
                     break;
                 case MenuPanel.Control:
+                    ControlDraw(sp);
                     break;
             }
 
@@ -200,8 +219,15 @@ namespace JetPirate
 
 
         #region Panels
+        //Panels have a similar logic, but I decided to split them out to make the code more scalable for future, in case if 
+        //panels will add more logic (for example change the volume in options or smth like that)
 
-        //Update Main menu
+
+        /// <summary>
+        /// Main Menu control
+        /// </summary>
+        /// <param name="oldPadState"></param>
+        /// <param name="curPadState"></param>
         private void MainMenuUpdate(GamePadState oldPadState, GamePadState curPadState)
         {
             for (int i = 0; i < mainMenuButtons.Count; i++)
@@ -229,6 +255,168 @@ namespace JetPirate
                 mainMenuButtons[currentButton].CliclMe();
             }
         }
+
+        /// <summary>
+        /// Main menu draw
+        /// </summary>
+        /// <param name="sp"></param>
+        private void MainMenuDraw(SpriteBatch sp)
+        {
+            sp.Draw(mainMenuBackground, ancorUI + Vector2.Zero, Color.White);
+
+            for (int i = 0; i < mainMenuButtons.Count; i++)
+            {
+                mainMenuButtons[i].DrawMe(sp);
+            }
+        }
+
+
+        /// <summary>
+        /// Option update (basicaly it is just back button, and there is no options)
+        /// </summary>
+        /// <param name="oldPadState"></param>
+        /// <param name="curPadState"></param>
+        public void OptionUpdate(GamePadState oldPadState, GamePadState curPadState)
+        {
+            if (oldPadState.Buttons.B == ButtonState.Pressed && curPadState.Buttons.B == ButtonState.Released)
+            {
+                backButton.CliclMe();
+            }
+        }
+
+        /// <summary>
+        /// Option panel draw
+        /// </summary>
+        /// <param name="sp"></param>
+        public void OptionDraw(SpriteBatch sp)
+        {
+            sp.Draw(optionBackground, ancorUI + Vector2.Zero, Color.White);
+            backButton.DrawMe(sp);
+        }
+
+
+        /// <summary>
+        /// Lose panel update
+        /// </summary>
+        /// <param name="oldPadState"></param>
+        /// <param name="curPadState"></param>
+        public void LoseUpdate(GamePadState oldPadState, GamePadState curPadState)
+        {
+            if (oldPadState.Buttons.B == ButtonState.Pressed && curPadState.Buttons.B == ButtonState.Released)
+            {
+                backButton.CliclMe();
+            }
+        }
+
+        /// <summary>
+        /// Lose panel draw method
+        /// </summary>
+        /// <param name="sp"></param>
+        public void LoseDraw(SpriteBatch sp)
+        {
+            sp.Draw(loseBackground, ancorUI + Vector2.Zero, Color.White);
+            backButton.DrawMe(sp);
+        }
+
+
+        /// <summary>
+        /// Win update (turn back to main menu)
+        /// </summary>
+        /// <param name="oldPadState"></param>
+        /// <param name="curPadState"></param>
+        public void WinUpdate(GamePadState oldPadState, GamePadState curPadState)
+        {
+            if (oldPadState.Buttons.B == ButtonState.Pressed && curPadState.Buttons.B == ButtonState.Released)
+            {
+                backButton.CliclMe();
+            }
+        }
+
+
+        /// <summary>
+        /// win state draw
+        /// </summary>
+        /// <param name="sp"></param>
+        public void WinDraw(SpriteBatch sp)
+        {
+            sp.Draw(winBackground, ancorUI + Vector2.Zero, Color.White);
+            backButton.DrawMe(sp);
+        }
+
+        /// <summary>
+        /// Pause menu buttons update
+        /// </summary>
+        /// <param name="oldPadState"></param>
+        /// <param name="curPadState"></param>
+        public void PauseUpdate(GamePadState oldPadState, GamePadState curPadState)
+        {
+            for (int i = 0; i < pauseButtons.Count; i++)
+            {
+                if (i == currentButton)
+                {
+                    pauseButtons[i].UpdateMe(Button.UIButtonState.highlighted);
+                }
+                else
+                {
+                    pauseButtons[i].UpdateMe(Button.UIButtonState.calm);
+                }
+            }
+
+            if (oldPadState.DPad.Down == ButtonState.Pressed && curPadState.DPad.Down == ButtonState.Released)
+            {
+                currentButton = Math.Clamp(currentButton++, 0, mainMenuButtons.Count);
+            }
+            if (oldPadState.DPad.Up == ButtonState.Pressed && curPadState.DPad.Up == ButtonState.Released)
+            {
+                currentButton = Math.Clamp(currentButton--, 0, mainMenuButtons.Count);
+            }
+            if (oldPadState.Buttons.X == ButtonState.Pressed && curPadState.Buttons.X == ButtonState.Released)
+            {
+                pauseButtons[currentButton].CliclMe();
+            }
+        }
+
+        /// <summary>
+        /// Pause UI draw
+        /// </summary>
+        /// <param name="sp"></param>
+        public void PauseDraw(SpriteBatch sp)
+        {
+            UIGameStateDraw(sp);
+            sp.Draw(pausePanel, ancorUI+Vector2.Zero, Color.White);
+            for (int i = 0; i < mainMenuButtons.Count; i++)
+            {
+                pauseButtons[i].DrawMe(sp);
+            }
+        }
+
+
+        /// <summary>
+        /// Control update 
+        /// </summary>
+        /// <param name="oldPadState"></param>
+        /// <param name="curPadState"></param>
+        public void ControlUpdate(GamePadState oldPadState, GamePadState curPadState)
+        {
+            if (oldPadState.Buttons.B == ButtonState.Pressed && curPadState.Buttons.B == ButtonState.Released)
+            {
+                backButton.CliclMe();
+            }
+        }
+
+
+        /// <summary>
+        /// Control Draw - picture with explanations of the game
+        /// </summary>
+        /// <param name="sp"></param>
+        public void ControlDraw(SpriteBatch sp)
+        {
+            sp.Draw(controlBackground, ancorUI + Vector2.Zero, Color.White);
+            backButton.DrawMe(sp);
+        }
+
+
+
 
 
         #endregion

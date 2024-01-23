@@ -7,6 +7,9 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace JetPirate
 {
+    /// <summary>
+    /// Particles that can be attached to main jet. Can't be attached to enemy unfortunatelly. 
+    /// </summary>
     internal class EngineParticles : Module
     {
 

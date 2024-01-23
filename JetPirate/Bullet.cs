@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace JetPirate
 {
+    /// <summary>
+    /// Bullet for a gun
+    /// </summary>
     internal class Bullet : Object2D
     {
 

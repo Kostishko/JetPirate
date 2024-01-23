@@ -7,6 +7,9 @@ using System;
 
 namespace JetPirate
 {
+    /// <summary>
+    /// Old staff
+    /// </summary>
     internal class JetShipTest2
     {
 

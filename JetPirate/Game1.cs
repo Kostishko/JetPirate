@@ -171,10 +171,7 @@ namespace JetPirate
 
         private void GameUpdate(GameTime gameTime)
         {
-            PhysicManager.UpdateMe();
-
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            PhysicManager.UpdateMe();           
 
             jetShip.UpdateMe(currState, prevState, gameTime);
             cam.UpdateMe(jetShip);
@@ -198,8 +195,7 @@ namespace JetPirate
 
         #endregion
 
-        #region Menu
-
+        #region Pause
 
 
         #endregion

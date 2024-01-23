@@ -20,7 +20,7 @@ namespace JetPirate.ScriptsUI
 
         public override void CliclMe()
         {
-
+            uiManager.menuPanel = UIManager.MenuPanel.Control;
         }
 
 

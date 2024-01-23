@@ -8,6 +8,9 @@ using System;
 
 namespace JetPirate
 {
+    /// <summary>
+    /// Enemy that spawned around the ship
+    /// </summary>
     public class Enemy : Object2D
     {
 

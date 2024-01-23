@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace JetPirate
 {
+    /// <summary>
+    /// this is a module that can be attached to anything and it will register any collisions with any other same module
+    /// and sent the data about collided object to their parent
+    /// </summary>
     internal class PhysicModule : Module
     {
 

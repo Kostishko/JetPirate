@@ -7,6 +7,9 @@ using System.Collections.Generic;
 
 namespace JetPirate
 {
+    /// <summary>
+    /// This is a system that produce particles for visual effect
+    /// </summary>
     internal class ParticleSystem : Object2D
     {
         //emission

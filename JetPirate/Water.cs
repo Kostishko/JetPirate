@@ -11,6 +11,9 @@ using System.Windows.Forms;
 
 namespace JetPirate
 {
+    /// <summary>
+    /// Water is a bottom bound that damage the jet and teleport it to safe zone
+    /// </summary>
     internal class Water : Object2D
     {
 
