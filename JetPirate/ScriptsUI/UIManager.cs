@@ -123,6 +123,7 @@ namespace JetPirate
             switch (menuPanel)
             {
                 case MenuPanel.MainMenu:
+                    MainMenuUpdate(oldPadState, curPadState);
                     break;
                 case MenuPanel.Options:
                     break;
@@ -140,6 +141,7 @@ namespace JetPirate
 
         }
 
+       
         public void DrawMe(SpriteBatch sp)
         {
             switch (menuPanel)
@@ -198,7 +200,35 @@ namespace JetPirate
 
 
         #region Panels
-        
+
+        //Update Main menu
+        private void MainMenuUpdate(GamePadState oldPadState, GamePadState curPadState)
+        {
+            for (int i = 0; i < mainMenuButtons.Count; i++)
+            {
+                if (i == currentButton)
+                {
+                    mainMenuButtons[i].UpdateMe(Button.UIButtonState.highlighted);
+                }
+                else
+                {
+                    mainMenuButtons[i].UpdateMe(Button.UIButtonState.calm);
+                }
+            }
+
+            if (oldPadState.DPad.Down == ButtonState.Pressed && curPadState.DPad.Down == ButtonState.Released)
+            {
+                currentButton = Math.Clamp(currentButton++, 0, mainMenuButtons.Count);
+            }
+            if (oldPadState.DPad.Up == ButtonState.Pressed && curPadState.DPad.Up == ButtonState.Released)
+            {
+                currentButton = Math.Clamp(currentButton--, 0, mainMenuButtons.Count);
+            }
+            if (oldPadState.Buttons.X == ButtonState.Pressed && curPadState.Buttons.X == ButtonState.Released)
+            {
+                mainMenuButtons[currentButton].CliclMe();
+            }
+        }
 
 
         #endregion
