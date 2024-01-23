@@ -18,7 +18,7 @@ namespace JetPirate
 
         //Visual
         private Texture2D texture;
-        private List<Rectangle> frameRectangles;
+       // private List<Rectangle> frameRectangles;
 
         //borders for enemy spawn
         private Camera camera;

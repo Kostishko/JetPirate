@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static JetPirate.Game1;
 
 namespace JetPirate.ScriptsUI
 {
@@ -18,8 +19,11 @@ namespace JetPirate.ScriptsUI
 
         public override void CliclMe()
         {
-            base.CliclMe();
-
+            
+                uiManager.gameMajor.jetShip.Restore();
+                uiManager.gameMajor.enemyManager.ResetMe();
+                uiManager.gameMajor.currentGameState = GameState.game;
+                uiManager.menuPanel = UIManager.MenuPanel.Game;
         }
     }
 }

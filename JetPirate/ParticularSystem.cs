@@ -11,7 +11,7 @@ namespace JetPirate
     {
         //emission
 
-        private Particle _particle;
+        //private Particle _particle;
         private List<Particle> _particles;
         public Vector2 Direction;
         private bool isPlaying;

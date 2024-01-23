@@ -25,7 +25,7 @@ namespace JetPirate
 
 
         //Ship - player
-        private JetShip jetShip;
+        public JetShip jetShip;
         
         //Camera
         private Camera cam;
@@ -116,12 +116,19 @@ namespace JetPirate
                     break;                
             }
 
-            //physic
 
-            
+
+            //ui update
+            uiManager.UpdateMe(prevState, currState);
+
+
+            //physic
             prevState = currState;
 
             base.Update(gameTime);
+
+
+            
         }
 
        
@@ -173,8 +180,7 @@ namespace JetPirate
             cam.UpdateMe(jetShip);
 
             background.UpdateMe();
-            water.UpdateMe();
-            uiManager.UpdateMe();
+            water.UpdateMe();            
             enemyManager.UpdateMe();
         }
 
@@ -193,16 +199,6 @@ namespace JetPirate
         #endregion
 
         #region Menu
-
-        //buttons functions
-        public void NewGameStart()
-        {
-            jetShip.Restore();
-            enemyManager.ResetMe();
-            currentGameState = GameState.game;
-
-        }
-
 
 
 

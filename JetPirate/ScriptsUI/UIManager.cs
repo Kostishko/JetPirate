@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using JetPirate.ScriptsUI;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -30,24 +31,41 @@ namespace JetPirate
         private Gun gunUI;
 
         //Enemy manager
-        private Game1 gameMajor;
+        public Game1 gameMajor;
 
-        //Menu 
+        //Menus
         public enum MenuPanel
         {
             MainMenu,
+            Pause,
+            Control,
             Options, 
             Lose,
             Win,
             Game
         }
         public MenuPanel menuPanel;
-        public List<Button> MainMenuButtons;
-        public int currentButton;
+        
+        //main panel
+        private List<Button> mainMenuButtons;
+        private int currentButton;
+        private Texture2D mainMenuBackground;
 
+        //Option panel (or creditors)
+        private Texture2D optionBackground;
 
+        //Control panel
+        private Texture2D controlBackground;
 
+        // Lose panel
+        private Texture2D loseBackground;
 
+        //Win panel
+        private Texture2D winBackground;
+
+        //pause panel
+        private Texture2D pausePanel;
+        private List<Button> pauseButtons;
 
 
         public UIManager(Camera cam, JetShip jetShip, ContentManager content, Game1 gameMajor) 
@@ -66,9 +84,34 @@ namespace JetPirate
             bulletCounterPic = contentUI.Load<Texture2D>("Sprites/Bullet");
             enemyPic = contentUI.Load<Texture2D>("Sprites/Rocket");
 
-            //Main menu filling
-            MainMenuButtons = new List<Button>();
-            
+            //backgrounds pics
+            mainMenuBackground = contentUI.Load<Texture2D>("Sprites/");
+            optionBackground = contentUI.Load<Texture2D>("Sprites/");
+            pausePanel= contentUI.Load<Texture2D>("Sprites/");
+            controlBackground = contentUI.Load<Texture2D>("Sprites/");
+            loseBackground= contentUI.Load<Texture2D>("Sprites/");
+            winBackground = contentUI.Load<Texture2D>("Sprites/");
+
+            //Main menu button - that's also looks like a terrible dessicion, but I don't have time to do smth smart, so it's just from the top of my head?
+            mainMenuButtons = new List<Button>();
+            mainMenuButtons[0] = new Button(new Vector2(600, 450), "New Game", fontUI, this);
+            mainMenuButtons[0] = (ButtonNewGame)mainMenuButtons[0];
+            mainMenuButtons[1] = new Button(new Vector2(600, 470), "Control", fontUI, this);
+            mainMenuButtons[1] = (ButtonControl)mainMenuButtons[1];
+            mainMenuButtons[2] = new Button(new Vector2(600, 490), "Credits", fontUI, this);
+            mainMenuButtons[2] = (ButtonCredits)mainMenuButtons[2];
+            mainMenuButtons[3] = new Button(new Vector2(600, 510), "Exit", fontUI, this);
+            mainMenuButtons[3] = (ButtonExit)mainMenuButtons[3];
+
+            //pause Buttons
+            pauseButtons = new List<Button>();
+            pauseButtons[0] = new Button(new Vector2(600, 450), "Back to game", fontUI, this);
+            pauseButtons[0] = (ButtonBackToGame)pauseButtons[0];
+            pauseButtons[1] = new Button(new Vector2(600, 470), "Main Menu", fontUI, this);
+            pauseButtons[1] = (ButtonMainMenu)pauseButtons[1];
+            pauseButtons[2] = new Button(new Vector2(600,490), "Exit", fontUI,this);
+            pauseButtons[2] = (ButtonExit)pauseButtons[2];
+
         }
 
 
@@ -77,13 +120,21 @@ namespace JetPirate
             //update an ancor
             ancorUI = -cam.position;
 
-            switch (gameMajor.currentGameState)
+            switch (menuPanel)
             {
-                case Game1.GameState.pause:
+                case MenuPanel.MainMenu:
                     break;
-                case Game1.GameState.game:
+                case MenuPanel.Options:
                     break;
-                case Game1.GameState.menu:
+                case MenuPanel.Lose:
+                    break;
+                case MenuPanel.Game:
+                    break;
+                case MenuPanel.Win: 
+                    break;
+                case MenuPanel.Pause: 
+                    break;
+                case MenuPanel.Control: 
                     break;
             }
 
@@ -91,19 +142,23 @@ namespace JetPirate
 
         public void DrawMe(SpriteBatch sp)
         {
-            switch (gameMajor.currentGameState)
+            switch (menuPanel)
             {
-                case Game1.GameState.pause: 
+                case MenuPanel.MainMenu:
                     break;
-                case Game1.GameState.game:
-                    UIGameStateDraw(sp);
+                case MenuPanel.Options:
                     break;
-                case Game1.GameState.menu:
-                    break;          
-                
+                case MenuPanel.Lose:
+                    break;
+                case MenuPanel.Game:
+                    break;
+                case MenuPanel.Win:
+                    break;
+                case MenuPanel.Pause:
+                    break;
+                case MenuPanel.Control:
+                    break;
             }
-
-            
 
         }
 
@@ -141,38 +196,10 @@ namespace JetPirate
 
 
 
-        #region Menu
-
-        public void UIMenuStateUpdate(GamePadState oldPadState, GamePadState curPadState)
-        {
-
-            switch (menuPanel)
-            {
-                case MenuPanel.MainMenu:
-                    break;
-                case MenuPanel.Options:
-                    break;
-                case MenuPanel.Lose:
-                    break;
-                case MenuPanel.Win:
-                    break;
-            }
-
-
-
-        }
-
-        public void UIMenuStateDraw()
-        {
-
-        }
-
 
         #region Panels
         
 
-
-        #endregion
 
         #endregion
 

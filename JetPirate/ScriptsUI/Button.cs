@@ -14,11 +14,11 @@ namespace JetPirate
         }
         public UIButtonState state;
 
-        private Vector2 position;
-        private String name;
-        private SpriteFont uiFont;
+        protected Vector2 position;
+        protected String name;
+        protected SpriteFont uiFont;
 
-        private UIManager uiManager;
+        protected UIManager uiManager;
 
         public Button(Vector2 position, String name, SpriteFont font, UIManager uiManager)
         {

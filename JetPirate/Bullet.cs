@@ -13,7 +13,7 @@ namespace JetPirate
     {
 
         //Gun Characteristics
-        private float damage;
+        //private float damage;
         private float speed;
         private Vector2 velocity;
 
@@ -52,7 +52,7 @@ namespace JetPirate
             origin = new Vector2(tex.Width / 2, tex.Height / 2);
 
             //gameplay
-            damage = 50f;
+            //damage = 50f;
             speed = 15f;
 
             //timer of bullet fly
