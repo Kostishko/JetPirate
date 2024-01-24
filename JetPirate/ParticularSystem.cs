@@ -79,6 +79,7 @@ namespace JetPirate
                 
             }
 
+            // update id it is turned on
             if(isPlaying)
             {
                 if (timer <= 0) //timer of emission
@@ -131,7 +132,9 @@ namespace JetPirate
         }
     }
 
-    //particle object
+    /// <summary>
+    /// Particle object
+    /// </summary>
     class Particle : Object2D
     {
 

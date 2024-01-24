@@ -168,17 +168,20 @@ namespace JetPirate
       
 
         #region Game
-
+        /// <summary>
+        /// Update due the gameplay
+        /// </summary>
+        /// <param name="gameTime"></param>
         private void GameUpdate(GameTime gameTime)
         {
-            PhysicManager.UpdateMe();           
+            PhysicManager.UpdateMe();   // update of all physic module and collisions between them       
 
-            jetShip.UpdateMe(currState, prevState, gameTime);
-            cam.UpdateMe(jetShip);
+            jetShip.UpdateMe(currState, prevState, gameTime); //update of player
+            cam.UpdateMe(jetShip); // camera update (flying after the ship)
 
-            background.UpdateMe();
-            water.UpdateMe();            
-            enemyManager.UpdateMe();
+            background.UpdateMe(); // update pictures behind the jet
+            water.UpdateMe();      // bottom bound update        
+            enemyManager.UpdateMe(); // enemies
 
             //Pause case
             if(currState.Buttons.Back==ButtonState.Released&&prevState.Buttons.Back==ButtonState.Pressed)
@@ -188,6 +191,7 @@ namespace JetPirate
 
             }
 
+            //Win state catching
             if(enemyManager.enemyCounter>=150)
             {
                 uiManager.gameMajor.jetShip.Restore();
@@ -196,6 +200,7 @@ namespace JetPirate
                 uiManager.menuPanel = UIManager.MenuPanel.Win;
             }
 
+            //Lose state catching
             if(jetShip.GetHealth()<=0)
             {
                 uiManager.gameMajor.jetShip.Restore();

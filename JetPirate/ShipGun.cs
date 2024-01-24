@@ -20,6 +20,11 @@ namespace JetPirate
             gun = new Gun(parent.GetPosition(),parent.GetRotation(), content.Load<Texture2D>("Sprites/Gun"), content.Load<Texture2D>("Sprites/Bullet"));
         }
 
+        /// <summary>
+        /// redirect the pad state to attached gun
+        /// </summary>
+        /// <param name="oldGP"></param>
+        /// <param name="currGP"></param>
         public void UpdateMe(GamePadState oldGP, GamePadState currGP)
         {
             base.UpdateMe();

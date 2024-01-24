@@ -69,7 +69,7 @@ namespace JetPirate
             if (isActive)
             {               
                 position += velocity * speed;
-                CheckBorders();
+                CheckBorders(); // destroyinfg if too far from the player ship
                
 
                 //Particles movement to this enemy
@@ -91,11 +91,11 @@ namespace JetPirate
             {
                 sp.Draw(texture, position, null, Color.White, Rotation, Vector2.Zero, 0.5f, SpriteEffects.None, 0f);
                 engineParticles.DrawMe(sp);
-                DebugManager.DebugRectangle(physicModuleOne.GetRectangle());
-                DebugManager.DebugRectangle(physicModuleTwo.GetRectangle());
+                //DebugManager.DebugRectangle(physicModuleOne.GetRectangle());
+                //DebugManager.DebugRectangle(physicModuleTwo.GetRectangle());
                 //add engine particles here
             }
-            if (!isActive)
+            if (!isActive) // should draw particles of explosion after death - but there are some bug - works not every time
             {
                 if (explosionTimer > 0)
                 {
@@ -111,12 +111,14 @@ namespace JetPirate
             }
         }
 
-        // Old one, to delete
-        //public void TakeDamage(float damage)
-        //{
-        //        this.Destroyed();       
-        //}
 
+        /// <summary>
+        /// Reset after death, or in the end of game
+        /// </summary>
+        /// <param name="speed"></param>
+        /// <param name="shipPos"></param>
+        /// <param name="startPos"></param>
+        /// <param name="texture"></param>
         public void ResetMe(float speed, Vector2 shipPos, Vector2 startPos , Texture2D texture)
         {            
             this.speed = speed;
@@ -132,6 +134,9 @@ namespace JetPirate
             physicModuleTwo.isPhysicActive=true;
         }
 
+        /// <summary>
+        /// Destroying the enemy if it is too far from the player jet
+        /// </summary>
         public void CheckBorders()
         {
             if(position.X<EnemyManager.GetLeftUpBorder().X||position.Y< EnemyManager.GetLeftUpBorder().Y)
@@ -146,6 +151,9 @@ namespace JetPirate
 
         }
 
+        /// <summary>
+        /// Back this enemy in the pull after deth
+        /// </summary>
         public void Destroyed()
         {
 
@@ -158,6 +166,10 @@ namespace JetPirate
             explosionTimer = explosionTime;
         }
 
+        /// <summary>
+        /// Deliver the damage to the player jet
+        /// </summary>
+        /// <param name="obj"></param>
         public override void Collided(Object2D obj)
         {
             if(obj is JetShip)

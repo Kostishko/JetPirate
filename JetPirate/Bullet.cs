@@ -84,7 +84,7 @@ namespace JetPirate
             if (isPhysicActive&& physicBody.isPhysicActive )
             {
                 sp.Draw(texture, position, null, Color.White, Rotation, origin, 0.5f, SpriteEffects.None, 1);
-                DebugManager.DebugRectangle(physicBody.GetRectangle());
+               // DebugManager.DebugRectangle(physicBody.GetRectangle());
             }
         }
         public void BulletFly(Vector2 pos, float rot, Vector2 vel)

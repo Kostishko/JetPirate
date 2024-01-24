@@ -42,6 +42,10 @@ namespace JetPirate
 
         }
 
+        /// <summary>
+        /// Returns this camera
+        /// </summary>
+        /// <returns></returns>
         public Matrix GetCam()
         {
             Matrix temp;
@@ -53,7 +57,7 @@ namespace JetPirate
         public void UpdateMe(JetShip jet)
         {
 
-
+            //Follow the ship till it not too far from the start position
             if (jet.GetPosition().X + screenSize.X / (2 * zoom)<rightBottomBorder.X && jet.GetPosition().X+screenSize.X/(2*zoom)>leftUpperBorder.X)
             {
                 position.X = (-jet.GetPosition().X + screenSize.X / (2 * zoom));

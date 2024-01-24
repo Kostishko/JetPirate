@@ -56,7 +56,10 @@ namespace JetPirate
             
         }
 
-
+        /// <summary>
+        /// Return the physic rectangle
+        /// </summary>
+        /// <returns></returns>
         public Rectangle GetRectangle()
         {
             return physicRec;

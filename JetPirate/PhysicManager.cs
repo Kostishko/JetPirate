@@ -33,7 +33,7 @@ namespace JetPirate
                         {
                             if (physicObjects[i].isPhysicActive && physicObjects[j].isPhysicActive)
                             { 
-                            physicObjects[i].Collided(physicObjects[j]);
+                            physicObjects[i].Collided(physicObjects[j]); // send the data about two collisions between two objects
                             }
                         }
                     }
@@ -42,11 +42,19 @@ namespace JetPirate
             }
         }
 
+        /// <summary>
+        /// When new physic object are creating it should be added to common list
+        /// </summary>
+        /// <param name="obj"></param>
         public static void AddObject(PhysicModule obj)
         {
             physicObjects.Add(obj);
         }
 
+        /// <summary>
+        /// In case if smth should be deleted from the list (don't use it case all object are reusable
+        /// </summary>
+        /// <param name="obj"></param>
         public static void RemoveObject(PhysicModule obj)
         { 
             physicObjects.Remove(obj);

@@ -19,8 +19,8 @@ namespace JetPirate
         {
             parent = par;
             shiftPosition = shift;
-            shiftRotation = (float)Math.Atan2(shift.Y, shift.X);
-            distance = (float)Math.Sqrt(Math.Pow(shift.X, 2)+ Math.Pow(shift.Y, 2));
+            shiftRotation = (float)Math.Atan2(shift.Y, shift.X); 
+            distance = (float)Math.Sqrt(Math.Pow(shift.X, 2)+ Math.Pow(shift.Y, 2)); // calculate the distance from pivot point to the module
         }
 
         public void UpdateMe()

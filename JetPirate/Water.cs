@@ -35,7 +35,7 @@ namespace JetPirate
 
         public Water(Vector2 pos, float rot, JetShip jet, ContentManager content) : base (pos, rot) 
         {
-
+            //sprite with two layers to change them as frames
             texture = content.Load<Texture2D>("Sprites/WaterSpriteSheet");
 
             frame = new Rectangle(0,0,texture.Width,texture.Height/2);
@@ -53,7 +53,7 @@ namespace JetPirate
 
             physicModule.UpdateMe();
 
-            //Shift
+            //Shift the jet back to safe from water space
             if (jetShip.GetPosition().X >= (position + rightShift).X)
             {
                 position += rightShift;
@@ -64,7 +64,7 @@ namespace JetPirate
                 position -= rightShift;
             }
 
-            //frame change
+            //frame change timer 
             if (frameTimer <= 0) 
             {
                 NextFrame();
@@ -88,7 +88,9 @@ namespace JetPirate
 
         }
 
-
+        /// <summary>
+        /// Change the frame
+        /// </summary>
         private void NextFrame()
         {
             if(frame.Location.Y+ texture.Height/2>= texture.Height)
@@ -101,6 +103,10 @@ namespace JetPirate
             }
         }
 
+        /// <summary>
+        /// Collision with the jet
+        /// </summary>
+        /// <param name="obj"></param>
         public override void Collided(Object2D obj)
         {
             if (obj is JetShip)

@@ -94,7 +94,7 @@ namespace JetPirate
                 enemies[i].UpdateMe();
             }
 
-            //Borders for enemies
+            //Borders for enemies - where they are disappering
             leftBorder = new Vector2(jet.GetPosition().X - 1280, jet.GetPosition().Y - 880);
             rightBorder = new Vector2(jet.GetPosition().X + 1280, jet.GetPosition().Y + 880);
 
@@ -110,7 +110,9 @@ namespace JetPirate
             }
         }
 
-
+        /// <summary>
+        /// pause between spawning
+        /// </summary>
         public void BetweenStateUpdate()
         {
             if (timerBetweenWave>0)
@@ -119,7 +121,7 @@ namespace JetPirate
             }
             else
             {
-                if (FreeEnemyCheck() >= 10)
+                if (FreeEnemyCheck() >= 10) // startinf the new wave only if there are enough free enemies
                 {
                     startPosShiftY =  rng.Next(0, 440);                    
 
@@ -132,6 +134,9 @@ namespace JetPirate
             }
         }
 
+        /// <summary>
+        /// Spawning state - restoring enemies from pool of free enemies
+        /// </summary>
         public void SpawnStateUpdate()
         {
             startPos = new Vector2(jet.GetPosition().X+(startPosShiftX * 700), jet.GetPosition().Y+(startPosShiftY*startPosShiftX));
@@ -157,6 +162,10 @@ namespace JetPirate
 
         }
 
+        /// <summary>
+        /// Check - how many free enemies in the pool
+        /// </summary>
+        /// <returns></returns>
         public int FreeEnemyCheck()
         {
             int count=0; 
@@ -170,6 +179,10 @@ namespace JetPirate
             return count;
         }
 
+        /// <summary>
+        /// Get the first free enemy
+        /// </summary>
+        /// <returns></returns>
         public Enemy GetFreeEnemy()
         {
             for (int i = 0; i<enemies.Count;i++)
@@ -200,6 +213,9 @@ namespace JetPirate
             return rightBorder;
         }
 
+        /// <summary>
+        /// Reset enemy manager for new game - return to start state
+        /// </summary>
         public void ResetMe()
         {
             for (int i = 0; i < enemies.Count; i++)

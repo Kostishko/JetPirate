@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks.Sources;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.Xna.Framework.Audio;
 
 namespace JetPirate
 {
@@ -109,6 +110,10 @@ namespace JetPirate
         private float explosionTime;
         private float explosionTimer;
 
+        //Audio
+        private SoundEffect engineSound;
+        private SoundEffectInstance leftEngineSound;
+        private SoundEffectInstance rightEngineSound;
         #endregion
 
 
@@ -134,6 +139,9 @@ namespace JetPirate
             piecesParticles = new ParticleSystem(position, Rotation, content.Load<Texture2D>("Particles/ParticleBit"), 4f, 10f, 0f, (float)Math.PI);
             explosionTime = 1f;
             explosionTimer = 0f;
+
+            //audio ( I have no time to planb and implement Audio  manager =(
+            engineSound = content.Load<SoundEffect>("Audio/rocketEngine");
 
             //Weapon
             shipGun = new ShipGun(this, new Vector2(texture.Width / 9 - 14, texture.Height / 5), content);
@@ -175,11 +183,39 @@ namespace JetPirate
                 //Rotation -= 0.02f*gPad.Triggers.Left;
                 LeftPower += 0.01f * gPad.Triggers.Right;
                 rightEngine.UpdateMe(true);
+
+                //audio
+                if(leftEngineSound==null)
+                {
+                    leftEngineSound = engineSound.CreateInstance();
+                    leftEngineSound.Pan = -1;
+                    leftEngineSound.Volume = 0.3f;
+                    leftEngineSound.Play();
+                }
+                else
+                {
+                    leftEngineSound.Play();
+                }
+                
             }
             else
             {
                 LeftPower -= 0.05f;
                 rightEngine.UpdateMe(false);
+
+                //pause audio
+                if (leftEngineSound == null)
+                {
+                    leftEngineSound = engineSound.CreateInstance();
+                    leftEngineSound.Pan = -1;
+                    leftEngineSound.Volume = 0.3f;
+                    leftEngineSound.Pause();
+                }
+                else
+                {
+                    leftEngineSound.Pause();
+                }
+                
             }
 
             if (gPad.Triggers.Left != 0)
@@ -191,11 +227,38 @@ namespace JetPirate
                 //Rotation += 0.02f * gPad.Triggers.Right;
                 RightPower += 0.01f * gPad.Triggers.Left;
                 leftEngine.UpdateMe(true);
+
+                //audio
+                if (rightEngineSound == null)
+                {
+                    rightEngineSound = engineSound.CreateInstance();
+                    rightEngineSound.Pan = -1;
+                    rightEngineSound.Volume = 0.3f;
+                    rightEngineSound.Play();
+                }
+                else
+                {
+                    rightEngineSound.Play();
+                }
             }
             else
             {
                 RightPower -= 0.05f;
                 leftEngine.UpdateMe(false);
+
+                //pause audio
+                if (rightEngineSound == null)
+                {
+                    rightEngineSound = engineSound.CreateInstance();
+                    rightEngineSound.Pan = -1;
+                    rightEngineSound.Volume = 0.3f;
+                    rightEngineSound.Pause();
+                }
+                else
+                {
+                    rightEngineSound.Pause();
+                }
+
             }
 
             //Inertion for rotation
@@ -335,10 +398,10 @@ namespace JetPirate
 
             // DebugManager.DebugString("LeftEngine distance: " + leftEngine.distance, new Vector2(0,0));
 
-            for (int i = 0; i < physicsModules.Count; i++)
-            {
-                DebugManager.DebugRectangle(physicsModules[i].GetRectangle());
-            }
+            //for (int i = 0; i < physicsModules.Count; i++)
+            //{
+            //    DebugManager.DebugRectangle(physicsModules[i].GetRectangle());
+            //}
             #endregion
         }
 
