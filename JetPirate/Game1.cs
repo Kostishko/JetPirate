@@ -188,7 +188,7 @@ namespace JetPirate
 
             }
 
-            if(enemyManager.enemyCounter>=10)
+            if(enemyManager.enemyCounter>=150)
             {
                 uiManager.gameMajor.jetShip.Restore();
                 uiManager.gameMajor.enemyManager.ResetMe();
