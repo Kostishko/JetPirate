@@ -17,6 +17,7 @@ namespace JetPirate
 
         //Font
         private SpriteFont fontUI;
+        private SpriteFont smallFontUI;
 
         //UI pictures
         private Texture2D shipHealthPic;
@@ -76,6 +77,7 @@ namespace JetPirate
         {
             contentUI = content;
             fontUI = contentUI.Load<SpriteFont>("Fonts/MajorFont");
+            smallFontUI = contentUI.Load<SpriteFont>("smallFontUI");
             this.cam = cam;
             shipUI = jetShip;
             gunUI = shipUI.GetGun();
@@ -89,35 +91,33 @@ namespace JetPirate
             enemyPic = contentUI.Load<Texture2D>("Sprites/Rocket");
 
             //backgrounds pics
-            mainMenuBackground = contentUI.Load<Texture2D>("Sprites/");
-            optionBackground = contentUI.Load<Texture2D>("Sprites/");
-            pausePanel = contentUI.Load<Texture2D>("Sprites/");
-            controlBackground = contentUI.Load<Texture2D>("Sprites/");
-            loseBackground = contentUI.Load<Texture2D>("Sprites/");
-            winBackground = contentUI.Load<Texture2D>("Sprites/");
+            mainMenuBackground = contentUI.Load<Texture2D>("Panels/BackgroundMainMenu");
+            optionBackground = contentUI.Load<Texture2D>("Panels/BackgroundCreatores");
+            pausePanel = contentUI.Load<Texture2D>("Panels/BackgroundPause");
+            controlBackground = contentUI.Load<Texture2D>("Panels/BackgroundThe Game");
+            loseBackground = contentUI.Load<Texture2D>("Panels/BackgroundLose");
+            winBackground = contentUI.Load<Texture2D>("Panels/BackgroundWin");
 
             //Main menu button - that's also looks like a terrible dessicion, but I don't have time to do smth smart, so it's just from the top of my head?
             mainMenuButtons = new List<Button>();
-            mainMenuButtons[0] = new Button(new Vector2(600, 450), "New Game", fontUI, this);
-            mainMenuButtons[0] = (ButtonNewGame)mainMenuButtons[0];
-            mainMenuButtons[1] = new Button(new Vector2(600, 470), "Control", fontUI, this);
-            mainMenuButtons[1] = (ButtonControl)mainMenuButtons[1];
-            mainMenuButtons[2] = new Button(new Vector2(600, 490), "Credits", fontUI, this);
-            mainMenuButtons[2] = (ButtonCredits)mainMenuButtons[2];
-            mainMenuButtons[3] = new Button(new Vector2(600, 510), "Exit", fontUI, this);
-            mainMenuButtons[3] = (ButtonExit)mainMenuButtons[3];
+            //mainMenuButtons[0] =
+            mainMenuButtons.Add(new ButtonNewGame(Vector2.Zero, new Vector2(400, 300), "New Game", fontUI, this));            
+            //mainMenuButtons[1] = 
+            mainMenuButtons.Add(new ButtonControl(Vector2.Zero, new Vector2(400, 350), "Control", fontUI, this));            
+            mainMenuButtons.Add(new ButtonCredits(Vector2.Zero, new Vector2(400, 400), "Creators", fontUI, this));            
+            mainMenuButtons.Add(new ButtonExit(Vector2.Zero, new Vector2(400, 450), "Exit", fontUI, this));
+            
 
             //pause Buttons
             pauseButtons = new List<Button>();
-            pauseButtons[0] = new Button(new Vector2(600, 450), "Back to game", fontUI, this);
-            pauseButtons[0] = (ButtonBackToGame)pauseButtons[0];
-            pauseButtons[1] = new Button(new Vector2(600, 470), "Main Menu", fontUI, this);
-            pauseButtons[1] = (ButtonMainMenu)pauseButtons[1];
-            pauseButtons[2] = new Button(new Vector2(600, 490), "Exit", fontUI, this);
-            pauseButtons[2] = (ButtonExit)pauseButtons[2];
+            //pauseButtons[0] = 
+            pauseButtons.Add( new ButtonBackToGame(Vector2.Zero, new Vector2(400, 300), "Back to game", fontUI, this));            
+            pauseButtons.Add(new ButtonMainMenu(Vector2.Zero, new Vector2(400, 350), "Main Menu", fontUI, this));            
+            pauseButtons.Add(new ButtonExit(Vector2.Zero, new Vector2(400, 400), "Exit", fontUI, this));
+            
 
             //back to main menu button
-            backButton = new ButtonMainMenu(new Vector2(600, 450), "Back to main Menu", fontUI, this);
+            backButton = new ButtonMainMenu(Vector2.Zero, new Vector2(400, 600), "Back to main Menu", fontUI, this);
 
         }
 
@@ -234,23 +234,23 @@ namespace JetPirate
             {
                 if (i == currentButton)
                 {
-                    mainMenuButtons[i].UpdateMe(Button.UIButtonState.highlighted);
+                    mainMenuButtons[i].UpdateMe(Button.UIButtonState.highlighted, ancorUI);
                 }
                 else
                 {
-                    mainMenuButtons[i].UpdateMe(Button.UIButtonState.calm);
+                    mainMenuButtons[i].UpdateMe(Button.UIButtonState.calm, ancorUI);
                 }
             }
 
             if (oldPadState.DPad.Down == ButtonState.Pressed && curPadState.DPad.Down == ButtonState.Released)
             {
-                currentButton = Math.Clamp(currentButton++, 0, mainMenuButtons.Count);
+                currentButton = Math.Clamp(currentButton+1, 0, mainMenuButtons.Count-1);
             }
             if (oldPadState.DPad.Up == ButtonState.Pressed && curPadState.DPad.Up == ButtonState.Released)
             {
-                currentButton = Math.Clamp(currentButton--, 0, mainMenuButtons.Count);
+                currentButton = Math.Clamp(currentButton-1, 0, mainMenuButtons.Count-1);
             }
-            if (oldPadState.Buttons.X == ButtonState.Pressed && curPadState.Buttons.X == ButtonState.Released)
+            if (oldPadState.Buttons.A == ButtonState.Pressed && curPadState.Buttons.A == ButtonState.Released)
             {
                 mainMenuButtons[currentButton].CliclMe();
             }
@@ -278,7 +278,8 @@ namespace JetPirate
         /// <param name="curPadState"></param>
         public void OptionUpdate(GamePadState oldPadState, GamePadState curPadState)
         {
-            if (oldPadState.Buttons.B == ButtonState.Pressed && curPadState.Buttons.B == ButtonState.Released)
+            backButton.UpdateMe(Button.UIButtonState.highlighted, ancorUI);
+            if (oldPadState.Buttons.A == ButtonState.Pressed && curPadState.Buttons.A == ButtonState.Released)
             {
                 backButton.CliclMe();
             }
@@ -291,6 +292,8 @@ namespace JetPirate
         public void OptionDraw(SpriteBatch sp)
         {
             sp.Draw(optionBackground, ancorUI + Vector2.Zero, Color.White);
+            var str = "Created by Iurii Kupreev";
+            sp.DrawString(smallFontUI, str, ancorUI + new Vector2(300, 300), Color.White);
             backButton.DrawMe(sp);
         }
 
@@ -302,7 +305,8 @@ namespace JetPirate
         /// <param name="curPadState"></param>
         public void LoseUpdate(GamePadState oldPadState, GamePadState curPadState)
         {
-            if (oldPadState.Buttons.B == ButtonState.Pressed && curPadState.Buttons.B == ButtonState.Released)
+            backButton.UpdateMe(Button.UIButtonState.highlighted, ancorUI);
+            if (oldPadState.Buttons.A == ButtonState.Pressed && curPadState.Buttons.A == ButtonState.Released)
             {
                 backButton.CliclMe();
             }
@@ -326,7 +330,8 @@ namespace JetPirate
         /// <param name="curPadState"></param>
         public void WinUpdate(GamePadState oldPadState, GamePadState curPadState)
         {
-            if (oldPadState.Buttons.B == ButtonState.Pressed && curPadState.Buttons.B == ButtonState.Released)
+            backButton.UpdateMe(Button.UIButtonState.highlighted, ancorUI);
+            if (oldPadState.Buttons.A == ButtonState.Pressed && curPadState.Buttons.A == ButtonState.Released)
             {
                 backButton.CliclMe();
             }
@@ -354,23 +359,23 @@ namespace JetPirate
             {
                 if (i == currentButton)
                 {
-                    pauseButtons[i].UpdateMe(Button.UIButtonState.highlighted);
+                    pauseButtons[i].UpdateMe(Button.UIButtonState.highlighted, ancorUI);
                 }
                 else
                 {
-                    pauseButtons[i].UpdateMe(Button.UIButtonState.calm);
+                    pauseButtons[i].UpdateMe(Button.UIButtonState.calm, ancorUI);
                 }
             }
 
             if (oldPadState.DPad.Down == ButtonState.Pressed && curPadState.DPad.Down == ButtonState.Released)
             {
-                currentButton = Math.Clamp(currentButton++, 0, mainMenuButtons.Count);
+                currentButton = Math.Clamp(currentButton+1, 0, pauseButtons.Count-1);
             }
             if (oldPadState.DPad.Up == ButtonState.Pressed && curPadState.DPad.Up == ButtonState.Released)
             {
-                currentButton = Math.Clamp(currentButton--, 0, mainMenuButtons.Count);
+                currentButton = Math.Clamp(currentButton-1, 0, pauseButtons.Count - 1);
             }
-            if (oldPadState.Buttons.X == ButtonState.Pressed && curPadState.Buttons.X == ButtonState.Released)
+            if (oldPadState.Buttons.A == ButtonState.Pressed && curPadState.Buttons.A == ButtonState.Released)
             {
                 pauseButtons[currentButton].CliclMe();
             }
@@ -384,7 +389,7 @@ namespace JetPirate
         {
             UIGameStateDraw(sp);
             sp.Draw(pausePanel, ancorUI+Vector2.Zero, Color.White);
-            for (int i = 0; i < mainMenuButtons.Count; i++)
+            for (int i = 0; i < pauseButtons.Count; i++)
             {
                 pauseButtons[i].DrawMe(sp);
             }
@@ -398,7 +403,8 @@ namespace JetPirate
         /// <param name="curPadState"></param>
         public void ControlUpdate(GamePadState oldPadState, GamePadState curPadState)
         {
-            if (oldPadState.Buttons.B == ButtonState.Pressed && curPadState.Buttons.B == ButtonState.Released)
+            backButton.UpdateMe(Button.UIButtonState.highlighted, ancorUI);
+            if (oldPadState.Buttons.A == ButtonState.Pressed && curPadState.Buttons.A == ButtonState.Released)
             {
                 backButton.CliclMe();
             }
@@ -412,6 +418,10 @@ namespace JetPirate
         public void ControlDraw(SpriteBatch sp)
         {
             sp.Draw(controlBackground, ancorUI + Vector2.Zero, Color.White);
+            var str = "In this game you control a jet ship.\nLeft and right triggers are using to control the power of left and right engine. \n" +
+                "Left stick is controlling the gun rotation, the shooting is bended on X button. \nPress Back to pause the game. \n" +
+                "Your target is overlived 150 enemies.";
+            sp.DrawString(smallFontUI, str, new Vector2(300, 300), Color.White);
             backButton.DrawMe(sp);
         }
 

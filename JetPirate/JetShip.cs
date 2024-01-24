@@ -30,6 +30,8 @@ namespace JetPirate
 
         //Movement variables (there are variable of real velocity and plan velocity to create the effect of inertion)
         #region Movement variables
+        
+
         //Rotation heritage from Object2D
         private float rightRotation;
         private float leftRotation;
@@ -112,6 +114,7 @@ namespace JetPirate
 
         public JetShip(Vector2 pos, float rot, ContentManager content, Camera cam) : base(pos, rot)
         {
+            
             texture = content.Load<Texture2D>("Sprites/Ship_03");
             origin = new Vector2(texture.Width / 2, texture.Height / 2);
             maxGravity = 2f;
@@ -269,11 +272,11 @@ namespace JetPirate
                 piecesParticles.Stop();
             }
 
-            //test
-            if (gPad.Buttons.Y == ButtonState.Released && oldGPad.Buttons.Y == ButtonState.Pressed)
-            {
-                TakeDamage();
-            }
+            //test of damage
+            //if (gPad.Buttons.Y == ButtonState.Released && oldGPad.Buttons.Y == ButtonState.Pressed)
+            //{
+            //    TakeDamage();
+            //}
 
             if (invulTimer > 0)
             {
@@ -409,6 +412,7 @@ namespace JetPirate
             position = Vector2.Zero;
             isAlive = true;
             position = startPos;
+            Rotation = 0;
         }
 
 

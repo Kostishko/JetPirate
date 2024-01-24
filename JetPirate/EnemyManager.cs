@@ -202,6 +202,10 @@ namespace JetPirate
 
         public void ResetMe()
         {
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                enemies[i].Destroyed();
+            }
             waveCounter = 0;
             waveEnemyCounter = 0;
             timeBetweenWave = 15f;
@@ -211,6 +215,7 @@ namespace JetPirate
             enemiesSpeed=0;         
             enemyCounter=0;
             currentState = WaveState.between;
+            
     }
 
 

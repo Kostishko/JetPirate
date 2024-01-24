@@ -9,9 +9,12 @@ using System.Threading.Tasks;
 
 namespace JetPirate.ScriptsUI
 {
+    /// <summary>
+    /// I fucked up with this class name
+    /// </summary>
     internal class ButtonCredits : Button
     {
-        public ButtonCredits(Vector2 pos, String name, SpriteFont font, UIManager uiManager) : base(pos, name, font, uiManager)
+        public ButtonCredits(Vector2 pos, Vector2 shift, String name, SpriteFont font, UIManager uiManager) : base(pos, shift, name, font, uiManager)
         {
 
         }

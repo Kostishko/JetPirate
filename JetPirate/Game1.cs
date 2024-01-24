@@ -87,6 +87,7 @@ namespace JetPirate
 
             //UI
             uiManager = new UIManager(cam, jetShip, Content, this);
+            uiManager.menuPanel = UIManager.MenuPanel.Control;
 
             //Background
             background = new Background(Vector2.Zero, 0f, Content, jetShip);
@@ -111,9 +112,7 @@ namespace JetPirate
                     GameUpdate(gameTime);
                     break;
                 case GameState.pause:
-                    break;                
-                case GameState.menu:
-                    break;                
+                    break;                                           
             }
 
 
@@ -147,9 +146,10 @@ namespace JetPirate
                     GameDraw();
                     break;
                 case GameState.pause:
-                    break;                
-                case GameState.menu:
-                    break;                
+                    GameDraw();
+                    break;
+                
+                             
             }
 
             
@@ -179,6 +179,31 @@ namespace JetPirate
             background.UpdateMe();
             water.UpdateMe();            
             enemyManager.UpdateMe();
+
+            //Pause case
+            if(currState.Buttons.Back==ButtonState.Released&&prevState.Buttons.Back==ButtonState.Pressed)
+            {
+                currentGameState = GameState.pause;
+                uiManager.menuPanel = UIManager.MenuPanel.Pause;
+
+            }
+
+            if(enemyManager.enemyCounter>=10)
+            {
+                uiManager.gameMajor.jetShip.Restore();
+                uiManager.gameMajor.enemyManager.ResetMe();
+                uiManager.gameMajor.currentGameState = GameState.pause;
+                uiManager.menuPanel = UIManager.MenuPanel.Win;
+            }
+
+            if(jetShip.GetHealth()<=0)
+            {
+                uiManager.gameMajor.jetShip.Restore();
+                uiManager.gameMajor.enemyManager.ResetMe();
+                uiManager.gameMajor.currentGameState = GameState.pause;
+                uiManager.menuPanel = UIManager.MenuPanel.Lose;
+            }
+
         }
 
         private void GameDraw()
@@ -195,22 +220,6 @@ namespace JetPirate
 
         #endregion
 
-        #region Pause
-
-
-        #endregion
-
-        #region Pause
-
-        #endregion
-
-        #region Win
-
-        #endregion
-
-        #region Lose
-
-        #endregion
 
     }
 }

@@ -11,7 +11,7 @@ namespace JetPirate.ScriptsUI
 {
     internal class ButtonMainMenu : Button
     {
-        public ButtonMainMenu(Vector2 pos, String name, SpriteFont font, UIManager uiManager) : base(pos, name, font, uiManager)
+        public ButtonMainMenu(Vector2 pos, Vector2 shift, String name, SpriteFont font, UIManager uiManager) : base(pos, shift, name, font, uiManager)
         {
 
         }
