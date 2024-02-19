@@ -79,6 +79,9 @@ namespace JetPirate
             // jetShip = new JetShipTest2(Content.Load<Texture2D>("jetship01"), new Vector2(400, 100));
             jetShip = new JetShip(new Vector2(0, -1000), 0f, Content, cam);
 
+            //audio
+            AudioManager.Initialize(800f, jetShip.GetListener());
+
             //tested particles
             //_particleSystem = new ParticleSystem(new Vector2(200, 200), -MathHelper.Pi, Content.Load<Texture2D>("fire"), 2f,10f,1f);
 

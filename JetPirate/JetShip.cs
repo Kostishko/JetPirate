@@ -110,11 +110,19 @@ namespace JetPirate
         private float explosionTime;
         private float explosionTimer;
 
+        #endregion
+
         //Audio
+        private AudioModule audioModule;
+        private ListenerModule listenerModule;
+        private List<SoundEffect> soundEffects;
+        private enum sounds : byte
+        {
+            engine
+        }
         private SoundEffect engineSound;
         private SoundEffectInstance leftEngineSound;
         private SoundEffectInstance rightEngineSound;
-        #endregion
 
 
         public JetShip(Vector2 pos, float rot, ContentManager content, Camera cam) : base(pos, rot)
@@ -140,8 +148,15 @@ namespace JetPirate
             explosionTime = 1f;
             explosionTimer = 0f;
 
-            //audio ( I have no time to planb and implement Audio  manager =(
-            engineSound = content.Load<SoundEffect>("Audio/rocketEngine");
+            //audio 
+            soundEffects = new List<SoundEffect>();
+            soundEffects.Add(content.Load<SoundEffect>("Audio/rocketEngine"));
+            //soundEffects[0] = content.Load<SoundEffect>("Audio/rocketEngine");
+            audioModule = new AudioModule(this, Vector2.Zero, soundEffects);
+            listenerModule = new ListenerModule(this, Vector2.Zero);
+            //engineSound = content.Load<SoundEffect>("Audio/rocketEngine");
+
+
 
             //Weapon
             shipGun = new ShipGun(this, new Vector2(texture.Width / 9 - 14, texture.Height / 5), content);
@@ -187,14 +202,16 @@ namespace JetPirate
                 //audio
                 if(leftEngineSound==null)
                 {
-                    leftEngineSound = engineSound.CreateInstance();
-                    leftEngineSound.Pan = -1;
-                    leftEngineSound.Volume = 0.3f;
-                    leftEngineSound.Play();
+                    //leftEngineSound = engineSound.CreateInstance();
+                    //leftEngineSound.Pan = -1;
+                    //leftEngineSound.Volume = 0.3f;
+                    //leftEngineSound.Play();
+                    audioModule.PlaySound(0);
                 }
                 else
                 {
-                    leftEngineSound.Play();
+                    //leftEngineSound.Play();
+                    audioModule.PlaySound(0);
                 }
                 
             }
@@ -206,14 +223,16 @@ namespace JetPirate
                 //pause audio
                 if (leftEngineSound == null)
                 {
-                    leftEngineSound = engineSound.CreateInstance();
-                    leftEngineSound.Pan = -1;
-                    leftEngineSound.Volume = 0.3f;
-                    leftEngineSound.Pause();
+                    //leftEngineSound = engineSound.CreateInstance();
+                    //leftEngineSound.Pan = -1;
+                    //leftEngineSound.Volume = 0.3f;
+                    audioModule.StopSound(0);
+                    //leftEngineSound.Pause();
                 }
                 else
                 {
-                    leftEngineSound.Pause();
+                    audioModule.StopSound(0);
+                    //leftEngineSound.Pause();
                 }
                 
             }
@@ -231,14 +250,16 @@ namespace JetPirate
                 //audio
                 if (rightEngineSound == null)
                 {
-                    rightEngineSound = engineSound.CreateInstance();
-                    rightEngineSound.Pan = -1;
-                    rightEngineSound.Volume = 0.3f;
-                    rightEngineSound.Play();
+                    //rightEngineSound = engineSound.CreateInstance();
+                    //rightEngineSound.Pan = -1;
+                    //rightEngineSound.Volume = 0.3f;
+                    //rightEngineSound.Play();
+                    audioModule.PlaySound(0);
                 }
                 else
                 {
-                    rightEngineSound.Play();
+                    //rightEngineSound.Play();
+                    audioModule.PlaySound(0);
                 }
             }
             else
@@ -249,14 +270,16 @@ namespace JetPirate
                 //pause audio
                 if (rightEngineSound == null)
                 {
-                    rightEngineSound = engineSound.CreateInstance();
-                    rightEngineSound.Pan = -1;
-                    rightEngineSound.Volume = 0.3f;
-                    rightEngineSound.Pause();
+                    //rightEngineSound = engineSound.CreateInstance();
+                    //rightEngineSound.Pan = -1;
+                    //rightEngineSound.Volume = 0.3f;
+                    //rightEngineSound.Pause();
+                    audioModule.PlaySound(0);
                 }
                 else
                 {
-                    rightEngineSound.Pause();
+                    audioModule.StopSound(0);
+                    //rightEngineSound.Pause();
                 }
 
             }
@@ -488,6 +511,11 @@ namespace JetPirate
         public Gun GetGun()
         {
             return shipGun.GetGun();
+        }
+
+        public ListenerModule GetListener()
+        {
+            return listenerModule;
         }
     }
 }

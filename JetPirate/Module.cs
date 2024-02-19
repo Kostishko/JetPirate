@@ -8,7 +8,7 @@ namespace JetPirate
     /// <summary>
     /// Object that follow and rotate after the parent object even if it is not at the centre of parent object
     /// </summary>
-    abstract class Module : Object2D
+    abstract public class Module : Object2D
     {
         protected Object2D parent;
         protected Vector2 shiftPosition;
